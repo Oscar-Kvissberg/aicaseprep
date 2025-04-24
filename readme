@@ -1,0 +1,45 @@
+This is what needs to be in the .env.local file in the main folder... 
+(not in the app folder!!!)
+
+Maby not everything is needed, but this is what I have so far... hehe
+
+:
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# NextAuth Configuration
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=
+
+to copy this shit code into another repo... just write the following in your terminal: 
+
+git remote add other-repo https://github.com/oscar-kvissberg/frame.git
+git fetch other-repo
+git merge --allow-unrelated-histories other-repo/main
+
+
+
+to manage stripe :
+After setting this up, try making a purchase again. The Stripe CLI will forward the webhook to your local server, and you should see the logs in your terminal.
+If you prefer to deploy to a public URL, you can:
+Deploy your app to Vercel
+Go to the Stripe Dashboard > Developers > Webhooks
+Add a new webhook endpoint: https://your-app-url.vercel.app/api/webhooks
+Select the event: checkout.session.completed
+Copy the signing secret and update your .env.local file
+Let me know which approach you'd prefer, and I'll help you set it up.
+
+
+
+
+
+för cli för betalning till local server
+stripe listen --forward-to http://localhost:3000/api/webhooks
+
+
+
+
+
+
