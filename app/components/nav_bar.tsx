@@ -130,39 +130,37 @@ export function NavBar() {
         {/* Navigation links */}
         <div className="p-4">
           <div className="flex flex-col gap-2">
-            <Button variant="outline" className="justify-start">
-            <Link
-              href="/dash"
-              onClick={() => setIsOpen(false)}
-              className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-3"
-            >
-              <HomeIcon className="w-5 h-5" />
-              Översikt
-            </Link>
+            <Button asChild variant="outline" className="justify-start w-full">
+              <Link
+                href="/dash"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 w-full h-full"
+              >
+                <HomeIcon className="w-5 h-5" />
+                Översikt
+              </Link>
             </Button>
 
-
-            <Button variant="outline" className="justify-start">
-            <Link
-              href="/cases"
-              onClick={() => setIsOpen(false)}
-              className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-3"
-            >
-              <BriefcaseIcon className="w-5 h-5" />
-              Case Bibliotek
-            </Link>
+            <Button asChild variant="outline" className="justify-start w-full">
+              <Link
+                href="/cases"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 w-full h-full"
+              >
+                <BriefcaseIcon className="w-5 h-5" />
+                Case Bibliotek
+              </Link>
             </Button>
 
-
-            <Button variant="outline" className="justify-start">
-            <Link
-              href="/tips"
-              onClick={() => setIsOpen(false)}
-              className="text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-3"
-            >
-              <BookOpenIcon className="w-5 h-5" />
-              Tips
-            </Link>
+            <Button asChild variant="outline" className="justify-start w-full">
+              <Link
+                href="/tips"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 w-full h-full"
+              >
+                <BookOpenIcon className="w-5 h-5" />
+                Tips
+              </Link>
             </Button>
           </div>
         </div>
