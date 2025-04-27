@@ -46,11 +46,9 @@ export function NavBar() {
       {/* Horizontal navbar */}
       <div className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 z-40">
         <div className="h-full flex items-center justify-between ml-20">
-          {/* Left side - Company name */}
+
+          {/* Left side - Company name leave blank */}
           <div className="flex items-center">
-            <h1 className="text-lg font-medium">
-              <Link href="/dash">Case Intervju Prac</Link>
-            </h1>
           </div>
 
           {/* Right side - Profile info and logout */}

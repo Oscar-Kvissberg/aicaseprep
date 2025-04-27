@@ -19,17 +19,51 @@ git remote add other-repo https://github.com/oscar-kvissberg/frame.git
 git fetch other-repo
 git merge --allow-unrelated-histories other-repo/main
 
+# Stripe Setup Instructions
 
+## Local Development Setup
 
-to manage stripe :
+1. Install Stripe CLI:
+   - For macOS (using Homebrew):
+     ```bash
+     brew install stripe/stripe-cli/stripe
+     ```
+   - For Windows (using Chocolatey):
+     ```bash
+     choco install stripe-cli
+     ```
+   - For Linux:
+     ```bash
+     curl -L https://github.com/stripe/stripe-cli/releases/latest/download/stripe_1.19.0_linux_x86_64.tar.gz | tar xz
+     sudo mv stripe /usr/local/bin/
+     ```
+
+2. Login to your Stripe account:
+   ```bash
+   stripe login
+   ```
+   This will open a browser window for authentication.
+
+3. Start listening for webhooks:
+   ```bash
+   stripe listen --forward-to http://localhost:3000/api/webhooks
+   ```
+
+4. The Stripe CLI will provide a webhook signing secret. Add this to your `.env.local` file:
+   ```
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   ```
+
+## Production Setup
+
+For production deployment:
+1. Deploy your app to Vercel
+2. Go to Stripe Dashboard > Developers > Webhooks
+3. Add a new webhook endpoint: https://your-app-url.vercel.app/api/webhooks
+4. Select the event: checkout.session.completed
+5. Copy the signing secret and update your `.env.local` file
+
 After setting this up, try making a purchase again. The Stripe CLI will forward the webhook to your local server, and you should see the logs in your terminal.
-If you prefer to deploy to a public URL, you can:
-Deploy your app to Vercel
-Go to the Stripe Dashboard > Developers > Webhooks
-Add a new webhook endpoint: https://your-app-url.vercel.app/api/webhooks
-Select the event: checkout.session.completed
-Copy the signing secret and update your .env.local file
-Let me know which approach you'd prefer, and I'll help you set it up.
 
 
 

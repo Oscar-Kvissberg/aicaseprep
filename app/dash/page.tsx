@@ -80,8 +80,7 @@ export default function DashboardPage() {
           const { data: balanceData, error: balanceError } = await supabase
             .from('user_credits')
             .select('credits')
-            .eq('user_id', userId)
-            .single();
+            .eq('user_id', userId);
           
           console.log('Balance query response:', {
             data: balanceData,
@@ -91,11 +90,11 @@ export default function DashboardPage() {
           if (balanceError) {
             console.error('Error fetching credit balance:', balanceError?.message || balanceError);
             toast.error('Kunde inte hämta kreditbalans');
-          } else if (balanceData === null || balanceData === undefined) {
+          } else if (!balanceData || balanceData.length === 0) {
             console.log('No balance data returned, defaulting to 0');
             balance = 0;
           } else {
-            balance = balanceData.credits;
+            balance = balanceData[0].credits;
             console.log('Current balance:', balance);
           }
         } catch (balanceErr) {
@@ -313,6 +312,8 @@ export default function DashboardPage() {
               Lägg till fler credits
             </Button>
           </Card>
+
+        
           
           <Card>
           
