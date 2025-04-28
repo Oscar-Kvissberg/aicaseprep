@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, Suspense } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
+import Image, { ImageLoaderProps } from 'next/image'
 import toast from 'react-hot-toast'
 import { Whiteboard } from '@/app/components/whiteboard'
 import { supabase } from '@/lib/supabase'
@@ -30,6 +30,11 @@ interface CaseSection {
   order_index: number
   graph_description?: string
   imageUrl?: string
+}
+
+// Add image loader for Supabase URLs
+const supabaseImageLoader = ({ src }: ImageLoaderProps) => {
+  return src;
 }
 
 function CaseInterviewContent() {
@@ -575,11 +580,15 @@ function CaseInterviewContent() {
                         {currentSection.prompt}
                         {currentSection.imageUrl && (
                           <div className="mt-4">
-                            <img
+                            <Image
+                              loader={supabaseImageLoader}
                               src={currentSection.imageUrl}
                               alt="Case graf/bild"
+                              width={400}
+                              height={300}
                               className="rounded-lg border border-gray-200 max-w-full h-auto"
                               style={{ maxHeight: '200px', objectFit: 'contain' }}
+                              unoptimized
                             />
                           </div>
                         )}
@@ -643,15 +652,19 @@ function CaseInterviewContent() {
                                 // Handle image markdown
                                 const imageMatch = line.match(/!\[([^\]]*)\]\(([^)]+)\)/);
                                 if (imageMatch) {
-                                  const [_, altText, imageUrl] = imageMatch;
+                                  const [, altText, imageUrl] = imageMatch;
                                   console.log('Found image:', altText, imageUrl);
                                   return (
                                     <div key={i} className="mt-2">
-                                      <img
+                                      <Image
+                                        loader={supabaseImageLoader}
                                         src={imageUrl}
                                         alt={altText}
+                                        width={400}
+                                        height={300}
                                         className="rounded-lg border border-gray-200 max-w-full h-auto"
                                         style={{ maxHeight: '200px', objectFit: 'contain' }}
+                                        unoptimized
                                       />
                                     </div>
                                   );
