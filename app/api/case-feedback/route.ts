@@ -59,7 +59,7 @@ async function getRelevantSections(caseId: string, userInput: string, sectionId:
     const formattedSection = `
 SEKTION: ${currentSection.title}
 FRÅGA: ${currentSection.prompt}
-KRITERIER: ${currentSection.criteria}
+
 ${currentSection.ai_instructions ? `AI-INSTRUKTIONER: ${currentSection.ai_instructions}` : ''}
 `;
 
@@ -216,7 +216,7 @@ export async function POST(request: Request) {
       title: businessCase.title,
       company: businessCase.company,
       industry: businessCase.industry,
-      description: businessCase.description
+      //description: businessCase.description
     });
     console.log('Current Section Criteria:', currentSection.criteria);
     console.log('Conversation History:', conversationHistory || 'Ingen tidigare konversation');
@@ -243,10 +243,14 @@ export async function POST(request: Request) {
     Titel: ${businessCase.title}  
     Företag: ${businessCase.company}  
     Bransch: ${businessCase.industry}  
-    Beskrivning: ${businessCase.description}
     
-    📎 Ledtrådar (data eller information du får ge ut vid behov):  
+    📎 Nuvarande sektionsfråga:  
     ${relevantSections}
+    
+    ${currentSection.graph_description ? `
+    📊 Graf/bild som är relevant för frågan:
+    ${currentSection.graph_description}
+    ` : ''}
     
     🎯 Bedömningskriterier i denna sektion:  
     ${currentSection.criteria}
@@ -276,10 +280,6 @@ export async function POST(request: Request) {
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
-        { 
-          role: "system", 
-          content: "Du är en erfaren affärskonsult som intervjuar en kandidat för ett case study. Din roll är att ställa följdfrågor, ge feedback och guida kandidaten genom uppgiften. Svara alltid på svenska. Följ noga AI-instruktionerna för varje sektion när du ger feedback." 
-        },
         { role: "user", content: prompt }
       ],
       temperature: 0.7,

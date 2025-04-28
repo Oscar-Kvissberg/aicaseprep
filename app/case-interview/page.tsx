@@ -28,6 +28,8 @@ interface CaseSection {
   type: string
   prompt: string
   order_index: number
+  graph_description?: string
+  imageUrl?: string
 }
 
 function CaseInterviewContent() {
@@ -75,7 +77,33 @@ function CaseInterviewContent() {
         if (sectionId) {
           const section = data.sections?.find((s: CaseSection) => s.id === sectionId)
           if (section) {
+            // Fetch the section image if it exists
+            console.log('Fetching image for section:', sectionId);
+            const { data: imageData, error: imageError } = await supabase
+              .from('case_section_images')
+              .select('*')
+              .eq('section_id', sectionId)
+              .single();
+
+            console.log('Image data from DB:', imageData);
+            console.log('Image error if any:', imageError);
+
+            if (imageData) {
+              // Extract just the filename and clean it
+              const filename = imageData.image_url.split('/').pop() || '';
+              const cleanFilename = filename.replace(/^\/+/, '').replace(/%20/g, ' ');
+              
+              const imageUrl = supabase.storage
+                .from('case-images')
+                .getPublicUrl(cleanFilename).data.publicUrl;
+              
+              console.log('Clean filename:', cleanFilename);
+              console.log('Generated image URL:', imageUrl);
+              section.imageUrl = imageUrl;
+            }
+
             setCurrentSection(section)
+            console.log('Current section with image:', section);
             // Reset conversation history when changing sections
             setConversationHistory('')
             setIsComplete(false)
@@ -295,7 +323,7 @@ function CaseInterviewContent() {
     // Create or update conversation history with user's message
     const updatedHistory = conversationHistory 
       ? `${conversationHistory}\n\n---\n\nKandidat: ${messageContent}`
-      : `Kund: ${currentSection?.prompt}\n\n---\n\nKandidat: ${messageContent}`
+      : `Kund: ${currentSection?.prompt}${currentSection?.imageUrl ? `\n\n![Case graf/bild](${currentSection.imageUrl})` : ''}\n\n---\n\nKandidat: ${messageContent}`
     
     // Update conversation history immediately with user's message
     setConversationHistory(updatedHistory)
@@ -545,6 +573,16 @@ function CaseInterviewContent() {
                       <div className="text-xs font-semibold mb-1">Kund</div>
                       <div className="whitespace-pre-line">
                         {currentSection.prompt}
+                        {currentSection.imageUrl && (
+                          <div className="mt-4">
+                            <img
+                              src={currentSection.imageUrl}
+                              alt="Case graf/bild"
+                              className="rounded-lg border border-gray-200 max-w-full h-auto"
+                              style={{ maxHeight: '200px', objectFit: 'contain' }}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -603,23 +641,17 @@ function CaseInterviewContent() {
                                 }
                                 
                                 // Handle image markdown
-                                if (line === '[Skiss]') {
-                                  console.log('Found [Skiss] marker');
-                                  return null;
-                                }
-                                
-                                const imageMatch = line.match(/!\[Skiss\]\((.*?)\)/);
+                                const imageMatch = line.match(/!\[([^\]]*)\]\(([^)]+)\)/);
                                 if (imageMatch) {
-                                  const imageUrl = imageMatch[1];
-                                  console.log('Found image URL:', imageUrl);
+                                  const [_, altText, imageUrl] = imageMatch;
+                                  console.log('Found image:', altText, imageUrl);
                                   return (
                                     <div key={i} className="mt-2">
-                                      <Image
+                                      <img
                                         src={imageUrl}
-                                        alt="Whiteboard skiss"
-                                        width={300}
-                                        height={200}
-                                        className="rounded-lg border border-gray-200 max-w-[30%] h-auto"
+                                        alt={altText}
+                                        className="rounded-lg border border-gray-200 max-w-full h-auto"
+                                        style={{ maxHeight: '200px', objectFit: 'contain' }}
                                       />
                                     </div>
                                   );
