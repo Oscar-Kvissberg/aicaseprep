@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 import { PrimaryButton } from './ui/primary_button';
 import toast from 'react-hot-toast';
@@ -37,10 +38,16 @@ const CREDIT_OPTIONS: CreditOption[] = [
 ];
 
 export function BuyCredits() {
+  const { data: session } = useSession();
   const [loading, setLoading] = useState<number | null>(null);
 
   const handlePurchase = async (creditOption: CreditOption) => {
     try {
+      if (!session?.user?.id) {
+        toast.error('Du måste vara inloggad för att köpa credits');
+        return;
+      }
+
       setLoading(creditOption.amount);
 
       // Get the price ID from the map
@@ -91,7 +98,7 @@ export function BuyCredits() {
           <div className="text-3xl font-bold mb-4">{option.price} kr</div>
           <PrimaryButton
             onClick={() => handlePurchase(option)}
-            disabled={loading !== null}
+            disabled={loading !== null || !session?.user?.id}
             className="w-full"
           >
             {loading === option.amount ? 'Processing...' : 'Buy Now'}

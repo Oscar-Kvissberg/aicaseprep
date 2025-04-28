@@ -143,20 +143,20 @@ function CaseInterviewContent() {
           }
         } else {
           // Only check and deduct credits if this is not the first case
-          // Get credit balance from user_credits table
-          const { data: userCredits, error: creditError } = await supabase
-            .from('user_credits')
-            .select('credits')
+          // Get credit balance
+          const { data: balanceData, error: balanceError } = await supabase
+            .from('credit_balances')
+            .select('current_balance')
             .eq('user_id', session?.user?.id)
             .single();
 
-          if (creditError) {
-            console.error('Error fetching credit balance:', creditError);
+          if (balanceError) {
+            console.error('Error fetching credit balance:', balanceError);
             toast.error('Kunde inte kontrollera dina krediter');
             return;
           }
 
-          const availableCredits = userCredits?.credits || 0;
+          const availableCredits = balanceData?.current_balance || 0;
 
           if (availableCredits < 1) {
             toast.error('Du har inga krediter kvar. Köp fler för att fortsätta.');
@@ -164,21 +164,32 @@ function CaseInterviewContent() {
             return;
           }
 
-          // When using a credit
-          const { error: deductError } = await supabase
-            .from('user_credits')
-            .upsert({
-              user_id: session?.user?.id,
-              credits: availableCredits - 1
-            }, {
-              onConflict: 'user_id'
-            });
+          // Use one credit
+          console.log('Attempting to use credit with params:', {
+            in_user_id: session?.user?.id,
+            in_amount: 1,
+            in_description: `Used credit for case: ${businessCase?.title}`
+          });
+          
+          const { data: deductData, error: deductError } = await supabase.rpc('use_user_credits', {
+            in_user_id: session?.user?.id,
+            in_amount: 1,
+            in_description: `Used credit for case: ${businessCase?.title}`
+          });
 
           if (deductError) {
-            console.error('Error deducting credits:', deductError);
-            toast.error('Kunde inte dra av kredit');
+            console.error('Error deducting credits:', {
+              error: deductError,
+              code: deductError.code,
+              message: deductError.message,
+              details: deductError.details,
+              hint: deductError.hint
+            });
+            toast.error(`Kunde inte dra av kredit: ${deductError.message || 'Okänt fel'}`);
             return;
           }
+
+          console.log('Successfully deducted credit:', deductData);
 
           toast.success('En kredit har dragits av. Lycka till med caset!');
         }

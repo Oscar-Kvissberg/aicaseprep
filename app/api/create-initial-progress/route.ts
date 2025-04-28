@@ -80,11 +80,11 @@ export async function POST(request: Request) {
 
     // Add initial credits using the new transaction system
     const { error: creditError } = await supabaseServer.rpc('add_user_credits', {
-      user_id: userId,
-      amount: 2, // Changed to 2 credits - one free credit plus one that will be used immediately
-      transaction_type: 'promotion',
-      description: 'Welcome bonus - 2 free credits',
-      metadata: {
+      in_user_id: userId,
+      in_amount: 3,
+      in_transaction_type: 'promotion',
+      in_description: 'Welcome bonus - 3 free credits',
+      in_metadata: {
         source: 'initial_signup'
       }
     });
@@ -96,9 +96,9 @@ export async function POST(request: Request) {
 
     // Immediately use one credit for the first case
     const { error: deductError } = await supabaseServer.rpc('use_user_credits', {
-      user_id: userId,
-      amount: 1,
-      description: 'Used credit for first case interview practice'
+      in_user_id: userId,
+      in_amount: 1,
+      in_description: 'Used credit for first case interview practice'
     });
 
     if (deductError) {

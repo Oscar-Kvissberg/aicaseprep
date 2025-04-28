@@ -30,58 +30,60 @@ export async function POST(req: Request) {
     console.log('Webhook event type:', event.type);
 
     if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const userId = session.metadata?.userId;
-      const creditAmount = parseInt(session.metadata?.creditAmount || '0');
+      const session = event.data.object;
+      console.log('Processing completed checkout session:', session.id);
+      
+      try {
+        const userId = session.metadata?.userId;
+        const creditAmount = session.metadata?.creditAmount;
+        
+        if (!userId || !creditAmount) {
+          console.error('Missing required metadata:', { userId, creditAmount });
+          return new Response('Missing required metadata', { status: 400 });
+        }
 
-      console.log('Processing completed checkout:', {
-        userId,
-        creditAmount,
-        sessionId: session.id,
-        metadata: session.metadata
-      });
-
-      if (!userId || !creditAmount) {
-        console.error('Missing userId or creditAmount in session metadata:', session.metadata);
-        return new NextResponse('Missing metadata', { status: 400 });
-      }
-
-      // First check current credits
-      const { data: currentCredits, error: creditsError } = await supabase
-        .from('user_credits')
-        .select('credits')
-        .eq('user_id', userId)
-        .single();
-
-      if (creditsError && creditsError.code !== 'PGRST116') {
-        console.error('Error checking current credits:', creditsError);
-        return new NextResponse('Error checking credits', { status: 500 });
-      }
-
-      const newCredits = (currentCredits?.credits || 0) + creditAmount;
-
-      // Update or insert new credits
-      const { error: updateError } = await supabase
-        .from('user_credits')
-        .upsert({
-          user_id: userId,
-          credits: newCredits
-        }, {
-          onConflict: 'user_id'
+        console.log('Adding credits:', {
+          userId,
+          creditAmount,
+          sessionId: session.id
         });
 
-      console.log('Update result:', {
-        currentCredits,
-        newCredits,
-        error: updateError
-      });
+        const { data, error } = await supabase.rpc('add_user_credits', {
+          in_user_id: userId,
+          in_amount: parseInt(creditAmount),
+          in_transaction_type: 'purchase',
+          in_description: `Stripe purchase - Session ${session.id}`,
+          in_metadata: {
+            stripe_session_id: session.id,
+            payment_status: session.payment_status
+          }
+        });
 
-      if (updateError) {
-        console.error('Error updating credits:', updateError);
-        return new NextResponse('Error updating credits', { status: 500 });
+        if (error) {
+          console.error('Error adding credits:', {
+            error: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code
+          });
+          return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+        }
+
+        console.log('Successfully added credits:', {
+          userId,
+          creditAmount,
+          response: data
+        });
+
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
+      } catch (err) {
+        console.error('Exception in webhook handler:', {
+          error: err,
+          message: err instanceof Error ? err.message : 'Unknown error',
+          stack: err instanceof Error ? err.stack : undefined
+        });
+        return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500 });
       }
-
-      return new NextResponse('Credits added successfully', { status: 200 });
     }
 
     return new NextResponse('Event processed', { status: 200 });

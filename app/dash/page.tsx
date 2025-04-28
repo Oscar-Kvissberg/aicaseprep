@@ -73,43 +73,64 @@ export default function DashboardPage() {
         const userId = session!.user!.id;
         console.log('Fetching data for user:', userId);
         
-        // Fetch credit balance from user_credits table
-        let balance = 0;
-        try {
-          console.log('Fetching credit balance from user_credits table');
-          const { data: balanceData, error: balanceError } = await supabase
-            .from('user_credits')
-            .select('credits')
-            .eq('user_id', userId);
-          
-          console.log('Balance query response:', {
-            data: balanceData,
-            error: balanceError?.message || balanceError
-          });
-          
-          if (balanceError) {
-            console.error('Error fetching credit balance:', balanceError?.message || balanceError);
-            toast.error('Kunde inte hämta kreditbalans');
-          } else if (!balanceData || balanceData.length === 0) {
-            console.log('No balance data returned, defaulting to 0');
-            balance = 0;
-          } else {
-            balance = balanceData[0].credits;
-            console.log('Current balance:', balance);
-          }
-        } catch (balanceErr) {
-          console.error('Exception when fetching credit balance:', {
-            error: balanceErr,
-            message: balanceErr instanceof Error ? balanceErr.message : 'Unknown error',
-            stack: balanceErr instanceof Error ? balanceErr.stack : undefined
-          });
-          toast.error('Kunde inte hämta kreditbalans');
-          balance = 0; // Default to 0 on error
-        }
+        // Check URL parameters for payment success
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        const credits = urlParams.get('credits');
         
-        if (!isMounted) return;
-        console.log('Setting credit balance to:', balance);
-        setCreditBalance(balance);
+        if (success === 'true' && credits) {
+          toast.success(`Successfully added ${credits} credits to your account!`);
+          // Remove the URL parameters without refreshing the page
+          window.history.replaceState({}, '', '/dash');
+        }
+
+        // First check if we need to initialize the user
+        const { data: balanceData, error: balanceError } = await supabase
+          .from('credit_balances')
+          .select('current_balance')
+          .eq('user_id', userId)
+          .single();
+
+        if (balanceError?.code === 'PGRST116' || !balanceData) {
+          console.log('No credit balance found, initializing user...');
+          // Create initial progress and credits
+          const response = await fetch('/api/create-initial-progress', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: userId
+            })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Failed to create initial progress:', errorData);
+            throw new Error(`Failed to create initial progress: ${errorData.error || response.statusText}`);
+          }
+
+          // After initialization, fetch the balance again
+          const { data: newBalanceData, error: newBalanceError } = await supabase
+            .from('credit_balances')
+            .select('current_balance')
+            .eq('user_id', userId)
+            .single();
+          
+          if (newBalanceError) {
+            console.error('Error fetching new credit balance:', newBalanceError);
+            toast.error('Could not fetch credit balance');
+          } else {
+            if (!isMounted) return;
+            setCreditBalance(newBalanceData?.current_balance || 0);
+          }
+        } else if (balanceError) {
+          console.error('Error fetching credit balance:', balanceError);
+          toast.error('Could not fetch credit balance');
+        } else {
+          if (!isMounted) return;
+          setCreditBalance(balanceData.current_balance);
+        }
         
         // Fetch user progress
         const { data: progress, error: progressError } = await supabase
@@ -138,8 +159,7 @@ export default function DashboardPage() {
           business_case: p.business_case?.[0] || null
         })) || [];
 
-        // If no progress exists at all and we haven't initialized yet, create initial credits entry
-        if ((!transformedProgress || transformedProgress.length === 0) && !initializationRef.current) {
+        if (!transformedProgress || transformedProgress.length === 0) {
           console.log('No existing progress found, creating initial entry');
           initializationRef.current = true;
           

@@ -12,14 +12,19 @@ const CREDITS_PRICE_MAP = {
 
 export async function POST(request: Request) {
   try {
+    // Get the session and verify user is authenticated
     const session = await getServerSession(authOptions);
+    
     if (!session?.user?.id) {
+      console.error('No session or user ID found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Parse the request body
     const { priceId, creditAmount } = await request.json();
     
     if (!priceId || !creditAmount) {
+      console.error('Missing required fields:', { priceId, creditAmount });
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -28,8 +33,15 @@ export async function POST(request: Request) {
 
     // Validate credit amount
     if (!CREDITS_PRICE_MAP[creditAmount as keyof typeof CREDITS_PRICE_MAP]) {
+      console.error('Invalid credit amount:', creditAmount);
       return NextResponse.json({ error: 'Invalid credit amount' }, { status: 400 });
     }
+
+    console.log('Creating checkout session for:', {
+      userId: session.user.id,
+      creditAmount,
+      priceId
+    });
 
     // Create Stripe checkout session
     const checkoutSession = await stripeServer.checkout.sessions.create({
@@ -41,12 +53,25 @@ export async function POST(request: Request) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXTAUTH_URL}/api/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXTAUTH_URL}/dash?success=true&credits=${creditAmount}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/dash?canceled=true`,
       metadata: {
         userId: session.user.id,
-        creditAmount: creditAmount.toString(),
-      },
+        creditAmount: creditAmount.toString()
+      }
+    });
+
+    if (!checkoutSession?.url) {
+      console.error('Failed to create checkout session URL');
+      return NextResponse.json(
+        { error: 'Failed to create checkout session' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Successfully created checkout session:', {
+      sessionId: checkoutSession.id,
+      url: checkoutSession.url
     });
 
     return NextResponse.json({ url: checkoutSession.url });
