@@ -12,7 +12,7 @@ import { Button } from '../components/ui/button'
 import { CaseCards } from '../components/case-cards'
 import { IconPlus } from '@tabler/icons-react'
 import Image from 'next/image'
-
+import { InfoFooter } from '../components/info_footer'
 interface UserCaseProgress {
   id?: string;
   user_id?: string;
@@ -36,6 +36,9 @@ interface BusinessCase {
   description: string
   language: string
   author_note: string
+  case_thumbnails?: {
+    image_url: string
+  }[]
 }
 
 // Add new interface for credit balance
@@ -220,7 +223,12 @@ export default function DashboardPage() {
       try {
         const { data, error } = await supabase
           .from('business_cases')
-          .select('*')
+          .select(`
+            *,
+            case_thumbnails (
+              image_url
+            )
+          `)
           .order('created_at', { ascending: false });
         
         if (error) {
@@ -287,6 +295,7 @@ export default function DashboardPage() {
     trendText: case_.industry,
     description: case_.title,
     estimatedTime: case_.estimated_time,
+    thumbnailUrl: case_.case_thumbnails?.[0]?.image_url,
     link: `/case-interview?caseId=${case_.id}`
   }))
 
@@ -322,6 +331,9 @@ export default function DashboardPage() {
             <CardContent>
               <p className="text-3xl font-bold text-purple-600">{creditBalance}</p>
             </CardContent>
+            <CardFooter>
+              <p className="text-sm">1 Credit = 1 Case</p>
+            </CardFooter>
             <Button 
               variant="outline"
               onClick={() => setShowBuyCredits(true)}
@@ -331,6 +343,7 @@ export default function DashboardPage() {
               <IconPlus className="w-4 h-4" />
               Lägg till fler credits
             </Button>
+            
           </Card>
 
         
@@ -348,6 +361,18 @@ export default function DashboardPage() {
           </Card>
        
       </div>
+
+      <Card className="mt-8">
+      <CardHeader>
+        <CardTitle>Populära Business cases</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <CaseCards data={caseCardsData} />
+      </CardContent>
+      <CardFooter>
+        <Link href="/cases" className="text-blue-500 hover:underline ml-1">Utforska alla case</Link>
+      </CardFooter>
+      </Card>
 
      
       <Card className="mt-8">
@@ -399,17 +424,9 @@ export default function DashboardPage() {
       </Card>
         
 
-      <Card className="mt-8">
-      <CardHeader>
-        <CardTitle>Populära Business cases</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <CaseCards data={caseCardsData} />
-      </CardContent>
-      <CardFooter>
-        <Link href="/cases" className="text-blue-500 hover:underline ml-1">Utforska alla case</Link>
-      </CardFooter>
-      </Card>
+      <InfoFooter />
+
+ 
 
 
       {/* Buy Credits Modal */}

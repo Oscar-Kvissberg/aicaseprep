@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { NavBar } from '../components/nav_bar'
 import { CaseCards } from '../components/case-cards'
+import { InfoFooter } from '../components/info_footer'
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -22,6 +23,9 @@ interface BusinessCase {
   description: string
   language: string
   author_note: string
+  case_thumbnails?: {
+    image_url: string
+  }[]
 }
 
 export default function CasesPage() {
@@ -35,7 +39,12 @@ export default function CasesPage() {
       try {
         const { data, error } = await supabase
           .from('business_cases')
-          .select('*')
+          .select(`
+            *,
+            case_thumbnails (
+              image_url
+            )
+          `)
           .order('created_at', { ascending: false })
 
         if (error) {
@@ -79,6 +88,7 @@ export default function CasesPage() {
     trendText: case_.industry,
     description: case_.title,
     estimatedTime: case_.estimated_time,
+    thumbnailUrl: case_.case_thumbnails?.[0]?.image_url,
     link: `/case-interview?caseId=${case_.id}`
   }))
 
@@ -96,6 +106,8 @@ export default function CasesPage() {
       <div>
       <CaseCards data={caseCardsData} />
       </div>
+
+      <InfoFooter />
     </div>
   )
 }
