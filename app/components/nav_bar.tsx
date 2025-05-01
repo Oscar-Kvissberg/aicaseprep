@@ -18,28 +18,7 @@ import {
 } from "@/app/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
 
-const caseTypes = [
-  {
-    title: "Market Sizing",
-    href: "/cases?type=market-sizing",
-    description: "Öva på att uppskatta marknadsstorlekar och potentiella affärsmöjligheter.",
-  },
-  {
-    title: "Profitability",
-    href: "/cases?type=profitability",
-    description: "Analysera lönsamhet och hitta förbättringsmöjligheter i verksamheter.",
-  },
-  {
-    title: "Market Entry",
-    href: "/cases?type=market-entry",
-    description: "Utvärdera nya marknader och strategier för marknadsinträde.",
-  },
-  {
-    title: "M&A",
-    href: "/cases?type=m-and-a",
-    description: "Analysera företagsförvärv och fusioner.",
-  },
-]
+
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
@@ -86,23 +65,12 @@ export function NavBar() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>
-                <BriefcaseIcon className="w-5 h-5 mr-2 inline" />
-                Case Bibliotek
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {caseTypes.map((caseType) => (
-                    <ListItem
-                      key={caseType.title}
-                      title={caseType.title}
-                      href={caseType.href}
-                    >
-                      {caseType.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
+              <Link href="/cases">
+                <span className={navigationMenuTriggerStyle()}>
+                  <BriefcaseIcon className="w-5 h-5 mr-2 inline" />
+                  Casebank
+                </span>
+              </Link>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
