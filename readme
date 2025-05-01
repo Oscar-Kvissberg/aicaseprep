@@ -74,6 +74,28 @@ stripe listen --forward-to http://localhost:3000/api/webhooks
 
 
 
+Det är viktigt att förstå skillnaden mellan test- och produktionsläge i Stripe.
+När du använder testkortsnummer (som 4242 4242 4242 4242) i produktion kommer det INTE att fungera eller räknas som riktiga pengar. Detta beror på att:
+Testkort fungerar ENDAST med Stripe's test API-nycklar
+Produktionskort fungerar ENDAST med Stripe's produktions API-nycklar
+I din produktionsmiljö bör du ha:
+STRIPE_SECRET_KEY som börjar med sk_live_
+STRIPE_PUBLIC_KEY som börjar med pk_live_
+I din utvecklingsmiljö har du:
+STRIPE_SECRET_KEY som börjar med sk_test_
+STRIPE_PUBLIC_KEY som börjar med pk_test_
+Om du försöker använda ett testkort (4242...) med live/produktionsnycklar kommer transaktionen att misslyckas direkt. Detta är en säkerhetsfunktion från Stripe för att förhindra att testbetalningar blandas med riktiga betalningar.
+För att testa i produktion behöver du använda ett riktigt betalkort. Alla transaktioner med live-nycklar är riktiga transaktioner med riktiga pengar.
+Tips för testning:
+Använd alltid testmiljön först för att verifiera att allt fungerar
+I testmiljön kan du använda testkort som:
+4242 4242 4242 4242 (lyckat köp)
+4000 0000 0000 0002 (misslyckat köp)
+När du är redo för produktion, gör ett litet test-köp med ett riktigt kort för att verifiera att allt fungerar
+Kom ihåg att riktiga transaktioner i produktion kommer att medföra Stripe's standardavgifter
+
+
+
 
 
 

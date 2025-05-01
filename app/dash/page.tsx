@@ -13,6 +13,7 @@ import { CaseCards } from '../components/case-cards'
 import { IconPlus } from '@tabler/icons-react'
 import Image from 'next/image'
 import { InfoFooter } from '../components/info_footer'
+
 interface UserCaseProgress {
   id?: string;
   user_id?: string;
