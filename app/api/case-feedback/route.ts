@@ -192,9 +192,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // Get relevant sections using RAG
-    const relevantSections = await getRelevantSections(caseId, responseText, sectionId);
-
     // Get current section data for criteria
     const { data: currentSection, error: sectionError } = await supabaseServer
       .from('case_sections')
@@ -210,21 +207,17 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('=== FULL PROMPT DETAILS ===');
-    console.log('Current Section Data:', relevantSections);
-    console.log('Business Case:', {
-      title: businessCase.title,
-      company: businessCase.company,
-      industry: businessCase.industry,
-      //description: businessCase.description
+    // Get relevant sections using RAG
+    const relevantSections = await getRelevantSections(caseId, responseText, sectionId);
+
+    // Debug logging - only log once
+    console.log('=== SECTION DATA ===');
+    console.log('Current Section:', {
+      title: currentSection.title,
+      prompt: currentSection.prompt,
+      case_data: currentSection.case_data,
+      criteria: currentSection.criteria
     });
-    console.log('Current Section Criteria:', currentSection.criteria);
-    console.log('Conversation History:', conversationHistory || 'Ingen tidigare konversation');
-    console.log('User Response:', responseText);
-    if (hasSketch) {
-      console.log('Sketch Analysis:', sketchAnalysis);
-    }
-    console.log('=== END PROMPT DETAILS ===');
 
     // Generate interactive response using OpenAI
     const prompt =  `
@@ -234,8 +227,15 @@ export async function POST(request: Request) {
     Dina uppgifter i denna interaktion är att:
     1. Guida kandidaten genom caset steg för steg och ge relevant information vid behov
     2. Säkerställa att kandidatens resonemang täcker sektionens kärnaspekter
-    3. Bedöma om kandidaten uppfyller kriterierna för att gå vidare
-    4. Om kandidaten ställer en fråga, svara mycket kortfattat utan att ge för mycket vägledning
+    3. Bedöma om kandidaten uppfyller samtliga kriterierier för att gå vidare
+    4. Om kandidaten uppfyller alla kriterier, ställ då ingen följdfråga utan ge bara ett förtyfligande avslut.
+    5. Om kandidaten ställer en fråga, svara mycket kortfattat utan att ge för mycket vägledning
+    6. Dela endast med dig av specifik data från CASE DATA-sektionen om kandidaten aktivt efterfrågar 
+        den typen av information, eller om deras resonemang naturligt leder till det.
+         Exempel: Om kandidaten säger “Kan det vara så att försäljningen har gått ner?”, svara då med relevant datapunkt:
+        “Ja, det är pga [relevant fakta från CASE DATA]”
+        (Du får aldrig visa hela CASE DATA-listan. Avslöja inte fler datapunkter än vad kandidaten själv leder in samtalet mot.)
+    
     
     ---
     
@@ -246,6 +246,11 @@ export async function POST(request: Request) {
     
     📎 Nuvarande sektionsfråga:  
     ${relevantSections}
+    
+    ${currentSection.case_data ? `
+    📊 CASE DATA:
+    ${currentSection.case_data}
+    ` : ''}
     
     ${currentSection.graph_description ? `
     📊 Graf/bild som är relevant för frågan:
@@ -269,8 +274,16 @@ export async function POST(request: Request) {
     ---
     
     ✅ När du bedömer kandidatens svar:
-    - Om kriterierna uppfylls, avsluta med: **"KRITERIER UPPFYLLDA: Ja"**
-    - Om kriterierna inte uppfylls, avsluta med: **"KRITERIER UPPFYLLDA: Nej"**
+
+      Om kandidatens svar uppfyller kriterierna, skriv exakt:
+      KRITERIER UPPFYLLDA: Ja (på en egen rad, utan extra text före eller efter) och ge ett förtyfligande avslut utan följdfrågor.
+
+
+      Om kandidatens svar inte uppfyller kriterierna, skriv exakt:
+      KRITERIER UPPFYLLDA: Nej (på en egen rad, utan extra text före eller efter)
+
+    🔒 Du får inte använda andra varianter som "Delvis" eller lägga till extra text på den raden.
+      Detta är ett tekniskt format som används för att trigga nästa steg i systemet.
     `;
 
     console.log('=== FINAL PROMPT ===');

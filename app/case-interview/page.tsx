@@ -556,6 +556,14 @@ function CaseInterviewContent() {
             </div>
           </div>
           
+          <div className="bg-gray-50 p-4 rounded-lg mb-6">
+            <div className="prose max-w-none">
+              <p className="text-lg">
+                {businessCase.description}
+              </p>
+            </div>
+          </div>
+          
           {!session ? (
             <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
               <p>Vänligen <Link href="/login" className="underline">logga in</Link> för att skicka in ditt svar och få feedback.</p>
