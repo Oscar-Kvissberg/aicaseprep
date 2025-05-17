@@ -47,7 +47,9 @@ export default function DashboardPage() {
   const [cases, setCases] = useState<BusinessCase[]>([])
   const initializationRef = useRef(false);
   
-
+  // Add featured case IDs - replace these with your desired case IDs
+  const featuredCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e']; // Replace with your actual case IDs
+  
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -226,16 +228,18 @@ export default function DashboardPage() {
   // Calculate statistics - only count actual cases (where case_id is not null)
   const completedCases = userProgress.filter(p => p.is_completed && p.case_id).length;
 
-  const caseCardsData = cases.map((case_) => ({
-    title: case_.company,
-    difficulty: case_.difficulty,
-    trend: 0,
-    trendText: case_.industry,
-    description: case_.title,
-    estimatedTime: case_.estimated_time,
-    thumbnailUrl: case_.case_thumbnails?.[0]?.image_url,
-    link: `/case-interview?caseId=${case_.id}`
-  }))
+  const caseCardsData = cases
+    .filter(case_ => featuredCaseIds.includes(case_.id))
+    .map((case_) => ({
+      title: case_.company,
+      difficulty: case_.difficulty,
+      trend: 0,
+      trendText: case_.industry,
+      description: case_.title,
+      estimatedTime: case_.estimated_time,
+      thumbnailUrl: case_.case_thumbnails?.[0]?.image_url,
+      link: `/case-interview?caseId=${case_.id}`
+    }))
 
   return (
     <div className="flex flex-col min-h-screen">
