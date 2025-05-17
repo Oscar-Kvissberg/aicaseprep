@@ -30,6 +30,7 @@ interface CaseSection {
   order_index: number
   graph_description?: string
   imageUrl?: string
+  hint?: string
 }
 
 // Add image loader for Supabase URLs
@@ -57,6 +58,8 @@ function CaseInterviewContent() {
   const [showWhiteboard, setShowWhiteboard] = useState(false)
   const [whiteboardImageUrl, setWhiteboardImageUrl] = useState<string | null>(null)
   const [isRecording, setIsRecording] = useState(false)
+  const [showHint, setShowHint] = useState(false)
+  const [hint, setHint] = useState<string | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
 
@@ -108,10 +111,12 @@ function CaseInterviewContent() {
             }
 
             setCurrentSection(section)
+            setHint(section.hint || null)
             console.log('Current section with image:', section);
             // Reset conversation history when changing sections
             setConversationHistory('')
             setIsComplete(false)
+            setShowHint(false)
           }
         }
       } catch (err) {
@@ -558,9 +563,39 @@ function CaseInterviewContent() {
           
           <div className="bg-gray-50 p-4 rounded-lg mb-6">
             <div className="prose max-w-none">
-              <p className="text-lg">
-                {businessCase.description}
-              </p>
+              <div className="flex justify-between items-start mb-4">
+                <p className="text-lg">
+                  {businessCase.description}
+                </p>
+                {hint && (
+                  <button
+                    type="button"
+                    onClick={() => setShowHint(!showHint)}
+                    className="ml-4 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg flex items-center gap-2 transition-colors"
+                    title="Få hint"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                    </svg>
+                    <span>Hint</span>
+                  </button>
+                )}
+              </div>
+              {showHint && hint && (
+                <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-purple-500">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-purple-800 mb-1">Hint</h4>
+                      <p className="text-sm text-purple-700">{hint}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
