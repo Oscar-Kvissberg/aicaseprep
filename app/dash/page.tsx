@@ -6,9 +6,10 @@ import Link from 'next/link'
 import { NavBar } from '../components/nav_bar'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'react-hot-toast'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../components/ui/card'
+
 import { CaseCards } from '../components/case-cards'
 import { InfoFooter } from '../components/info_footer'
+import { Button } from '../components/ui/button'
 
 interface BusinessCase {
   id: string
@@ -32,8 +33,19 @@ export default function DashboardPage() {
   const [cases, setCases] = useState<BusinessCase[]>([])
   
   // Add featured case IDs - replace these with your desired case IDs
-  const featuredCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e']; // Replace with your actual case IDs
+  const featuredCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
   
+  // Add featured case IDs - replace these with your desired case IDs
+  const newCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
+  
+  // Add featured case IDs - replace these with your desired case IDs
+  const easyuredCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
+  
+  // Add featured case IDs - replace these with your desired case IDs
+  const relevantCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
+  
+
+
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -152,23 +164,93 @@ export default function DashboardPage() {
       link: `/case-interview?caseId=${case_.id}`
     }))
 
+  const newCasesData = cases
+    .filter(case_ => newCaseIds.includes(case_.id))
+    .map((case_) => ({
+      title: case_.company,
+      difficulty: case_.difficulty,
+      trend: 0,
+      trendText: case_.industry,
+      description: case_.title,
+      estimatedTime: case_.estimated_time,
+      thumbnailUrl: case_.case_thumbnails?.[0]?.image_url,
+      link: `/case-interview?caseId=${case_.id}`
+    }))
+
+  const ensuredCasesData = cases
+    .filter(case_ => easyuredCaseIds.includes(case_.id))
+    .map((case_) => ({
+      title: case_.company,
+      difficulty: case_.difficulty,
+      trend: 0,
+      trendText: case_.industry,
+      description: case_.title,
+      estimatedTime: case_.estimated_time,
+      thumbnailUrl: case_.case_thumbnails?.[0]?.image_url,
+      link: `/case-interview?caseId=${case_.id}`
+    }))
+
+  const relevantCasesData = cases
+    .filter(case_ => relevantCaseIds.includes(case_.id))
+    .map((case_) => ({
+      title: case_.company,
+      difficulty: case_.difficulty,
+      trend: 0,
+      trendText: case_.industry,
+      description: case_.title,
+      estimatedTime: case_.estimated_time,
+      thumbnailUrl: case_.case_thumbnails?.[0]?.image_url,
+      link: `/case-interview?caseId=${case_.id}`
+    }))
+
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-
-      <div className="container mx-auto px-4 py-8">
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Populära Business cases</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CaseCards data={caseCardsData} />
-          </CardContent>
-          <CardFooter>
-            <Link href="/cases" className="text-blue-500 hover:underline ml-1">Utforska alla case</Link>
-          </CardFooter>
-        </Card>
-
+      <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-600">Populära Business cases</h2>
+            <Link href="/cases">
+              <Button variant="outline" size="sm">
+                Utforska alla case
+              </Button>
+            </Link>
+          </div>
+          <CaseCards data={caseCardsData} />
+        </div>
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-600">Nya Case</h2>
+            <Link href="/cases">
+              <Button variant="outline" size="sm">
+                Utforska alla case
+              </Button>
+            </Link>
+          </div>
+          <CaseCards data={newCasesData} />
+        </div>
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-600">Case med garanterad kvalitet</h2>
+            <Link href="/cases">
+              <Button variant="outline" size="sm">
+                Utforska alla case
+              </Button>
+            </Link>
+          </div>
+          <CaseCards data={ensuredCasesData} />
+        </div>
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevanta Case för dig</h2>
+            <Link href="/cases">
+              <Button variant="outline" size="sm">
+                Utforska alla case
+              </Button>
+            </Link>
+          </div>
+          <CaseCards data={relevantCasesData} />
+        </div>
         <InfoFooter />
       </div>
     </div>

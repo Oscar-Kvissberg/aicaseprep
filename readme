@@ -99,3 +99,12 @@ Kom ihåg att riktiga transaktioner i produktion kommer att medföra Stripe's st
 
 
 
+to do list:
+
+- fixa så att det ser ut som leetcode explore på start sidan
+- göra så att man kan se startsida utan att vara inloggad, och när man klickar logga in så kommer man till logga in sidan.. 
+- 
+
+
+
+
