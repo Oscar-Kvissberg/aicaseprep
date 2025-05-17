@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { NavBar } from '../components/nav_bar'
@@ -8,21 +8,7 @@ import { supabase } from '@/lib/supabase'
 import { toast } from 'react-hot-toast'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../components/ui/card'
 import { CaseCards } from '../components/case-cards'
-import Image from 'next/image'
 import { InfoFooter } from '../components/info_footer'
-
-interface UserCaseProgress {
-  id?: string;
-  user_id?: string;
-  case_id?: string | null;
-  completed_sections: number;
-  total_sections: number;
-  is_completed: boolean;
-  last_activity: string;
-  business_case?: {
-    title: string;
-  } | null;
-}
 
 interface BusinessCase {
   id: string
@@ -41,11 +27,9 @@ interface BusinessCase {
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
-  const [userProgress, setUserProgress] = useState<UserCaseProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cases, setCases] = useState<BusinessCase[]>([])
-  const initializationRef = useRef(false);
   
   // Add featured case IDs - replace these with your desired case IDs
   const featuredCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e']; // Replace with your actual case IDs
@@ -74,76 +58,6 @@ export default function DashboardPage() {
           toast.success(`Successfully added ${credits} credits to your account!`);
           // Remove the URL parameters without refreshing the page
           window.history.replaceState({}, '', '/dash');
-        }
-
-        // Fetch user progress
-        const { data: progress, error: progressError } = await supabase
-          .from('user_case_progress')
-          .select(`
-            id,
-            user_id,
-            case_id,
-            completed_sections,
-            total_sections,
-            is_completed,
-            last_activity,
-            business_case:business_cases(title)
-          `)
-          .eq('user_id', userId)
-          .order('last_activity', { ascending: false });
-
-        if (progressError) {
-          console.error('Error fetching progress:', progressError);
-          throw progressError;
-        }
-        
-        // Transform the data to match the UserCaseProgress interface
-        const transformedProgress = progress?.map(p => ({
-          ...p,
-          business_case: p.business_case?.[0] || null
-        })) || [];
-
-        if (!transformedProgress || transformedProgress.length === 0) {
-          console.log('No existing progress found, creating initial entry');
-          initializationRef.current = true;
-          
-          try {
-            // Create initial progress through API endpoint
-            const response = await fetch('/api/create-initial-progress', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                userId: userId
-              })
-            });
-
-            if (!response.ok) {
-              const errorData = await response.json();
-              throw new Error(`Failed to create initial progress: ${errorData.error || response.statusText}`);
-            }
-
-            const newProgress = await response.json();
-            console.log('Successfully created initial progress:', newProgress);
-            
-            if (!isMounted) return;
-            setUserProgress([{
-              ...newProgress,
-              business_case: null
-            }]);
-          } catch (insertErr) {
-            console.error('Insert operation failed:', {
-              error: insertErr,
-              message: insertErr instanceof Error ? insertErr.message : 'Unknown error',
-              stack: insertErr instanceof Error ? insertErr.stack : undefined
-            });
-            throw new Error(`Insert operation failed: ${insertErr instanceof Error ? insertErr.message : 'Unknown error'}`);
-          }
-        } else {
-          console.log('Found existing progress:', transformedProgress);
-          if (!isMounted) return;
-          setUserProgress(transformedProgress);
         }
       } catch (err) {
         console.error('Error in fetchUserData:', {
@@ -225,9 +139,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Calculate statistics - only count actual cases (where case_id is not null)
-  const completedCases = userProgress.filter(p => p.is_completed && p.case_id).length;
-
   const caseCardsData = cases
     .filter(case_ => featuredCaseIds.includes(case_.id))
     .map((case_) => ({
@@ -245,33 +156,7 @@ export default function DashboardPage() {
     <div className="flex flex-col min-h-screen">
       <NavBar />
 
-      <div className="relative w-full h-[400px] md:h-[400px]">
-        <Image 
-          src="/images/case_interview.png" 
-          alt="Dashboard Hero" 
-          fill
-          priority
-          className="object-cover object-[center_25%]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white via-white/20">
-          <h1 className="text-black text-3xl md:text-4xl lg:text-5xl font-bold text-center px-4 pt-50">
-            Case Interview Practice
-          </h1>
-        </div>
-      </div>
-
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Avklarade Case</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{completedCases}</p>
-            </CardContent>
-          </Card>
-        </div>
-
         <Card className="mt-8">
           <CardHeader>
             <CardTitle>Populära Business cases</CardTitle>
@@ -282,52 +167,6 @@ export default function DashboardPage() {
           <CardFooter>
             <Link href="/cases" className="text-blue-500 hover:underline ml-1">Utforska alla case</Link>
           </CardFooter>
-        </Card>
-
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Din Progress</CardTitle>
-          </CardHeader>
-          
-          {!userProgress.some(p => p.case_id) ? (
-            <p className="text-gray-600">
-              Du har inte börjat på några case än. 
-              <Link href="/cases" className="text-blue-500 hover:underline ml-1">
-                Börja öva nu!
-              </Link>
-            </p>
-          ) : (
-            <CardContent>
-              {userProgress
-                .filter(p => p.case_id)
-                .map((progress) => (
-                  <div key={progress.case_id} className="border-b pb-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="text-lg font-medium">
-                        {progress.business_case?.title || 'Okänt Case'}
-                      </h3>
-                      <span className={`px-2 py-1 rounded text-sm ${
-                        progress.is_completed 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {progress.is_completed ? 'Avklarat' : 'Pågående'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm text-gray-600">
-                      <span>Avklarade sektioner: {progress.completed_sections} av {progress.total_sections}</span>
-                      <span>Senaste aktivitet: {new Date(progress.last_activity).toLocaleDateString('sv-SE')}</span>
-                    </div>
-                    <div className="mt-2 bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-500 rounded-full h-2 transition-all duration-300"
-                        style={{ width: `${(progress.completed_sections / progress.total_sections) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
-            </CardContent>
-          )}
         </Card>
 
         <InfoFooter />
