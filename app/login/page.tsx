@@ -13,6 +13,7 @@ function LoginContent() {
   const searchParams = useSearchParams()
   const registered = searchParams.get('registered')
   const error = searchParams.get('error')
+  const callbackUrl = searchParams.get('callbackUrl')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
@@ -44,7 +45,7 @@ function LoginContent() {
       
       await signIn('google', {
         redirect: true,
-        callbackUrl: '/dash'
+        callbackUrl: callbackUrl || '/dash'
       })
     } catch (error) {
       console.error('Login error:', error)

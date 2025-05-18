@@ -39,7 +39,7 @@ const supabaseImageLoader = ({ src }: ImageLoaderProps) => {
 }
 
 function CaseInterviewContent() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const router = useRouter()
   const searchParams = useSearchParams()
   const caseId = searchParams.get('caseId')
@@ -64,6 +64,12 @@ function CaseInterviewContent() {
   const chunksRef = useRef<Blob[]>([])
 
   useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (!session && caseId) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(`/case-interview?caseId=${caseId}`)}`);
+    }
+
     if (!caseId) {
       router.push('/cases')
       return
@@ -128,7 +134,7 @@ function CaseInterviewContent() {
     }
 
     fetchCase()
-  }, [caseId, sectionId, router])
+  }, [session, status, caseId, sectionId, router])
 
   const handleStartCase = async () => {
     if (sections.length > 0) {

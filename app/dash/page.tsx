@@ -49,16 +49,16 @@ export default function DashboardPage() {
   useEffect(() => {
     if (status === 'loading') return;
 
-    if (!session?.user?.id) {
-      setLoading(false);
-      return;
-    }
-
     let isMounted = true;
 
     async function fetchUserData() {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        const userId = session!.user!.id;
+        const userId = session.user.id;
         console.log('Fetching data for user:', userId);
         
         // Check URL parameters for payment success
@@ -110,6 +110,8 @@ export default function DashboardPage() {
       } catch (err) {
         console.error('Exception when fetching business cases:', err);
         toast.error('Kunde inte hämta case');
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -126,17 +128,6 @@ export default function DashboardPage() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  // Show login prompt if no session
-  if (!session) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
-          <p>Please <Link href="/login" className="underline">sign in</Link> to view your dashboard.</p>
-        </div>
       </div>
     );
   }

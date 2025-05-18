@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { NavBar } from '../components/nav_bar'
 import { CaseCards } from '../components/case-cards'
@@ -96,15 +95,14 @@ export default function CasesPage() {
     <div className="container mx-auto px-4 py-8 mt-16">
       <NavBar />
       
-      
       {!session ? (
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
-          <p>Please <Link href="/login" className="underline">sign in</Link> to practice business cases and get feedback.</p>
+          <p>Du behöver logga in för att öva på case och få feedback. Klicka på &quot;Logga in&quot; i övre högra hörnet.</p>
         </div>
       ) : null}
       
       <div>
-      <CaseCards data={caseCardsData} />
+        <CaseCards data={caseCardsData} />
       </div>
 
       <InfoFooter />

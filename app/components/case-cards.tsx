@@ -1,6 +1,8 @@
 import { IconTrendingDown, IconTrendingUp, IconClock } from "@tabler/icons-react"
 import Link from "next/link"
 import Image from "next/image"
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 import { Badge } from "@/app/components/ui/badge"
 import {
@@ -39,12 +41,24 @@ const supabaseImageLoader = ({ src }: { src: string }) => {
 }
 
 export function CaseCards({ data }: CaseCardsProps) {
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  const handleCaseClick = (e: React.MouseEvent, link: string) => {
+    if (!session) {
+      e.preventDefault()
+      // Store the intended destination in the URL
+      router.push(`/login?callbackUrl=${encodeURIComponent(link)}`)
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {data.map((card, index) => (
         <Link 
           key={card.id || index} 
           href={card.link || '#'}
+          onClick={(e) => card.link && handleCaseClick(e, card.link)}
           className="h-full"
         >
           <Card className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden h-full relative group p-0">

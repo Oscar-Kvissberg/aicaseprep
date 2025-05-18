@@ -5,7 +5,6 @@ import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { UserCircleIcon, BriefcaseIcon, ArrowLeftEndOnRectangleIcon, BookOpenIcon, HomeIcon, CreditCardIcon } from '@heroicons/react/24/outline'
-import { PrimaryButton } from './ui/primary_button'
 import { Button } from './ui/button'
 import { BuyCredits } from './buy_credits'
 import {
@@ -81,7 +80,7 @@ export function NavBar() {
                 <Link href="/dash">
                   <span className={navigationMenuTriggerStyle()}>
                     <HomeIcon className="w-5 h-5 mr-2 inline" />
-                    Översikt
+                    Hem
                   </span>
                 </Link>
               </NavigationMenuItem>
@@ -202,7 +201,7 @@ export function NavBar() {
               </Button>
             ) : (
               <Link href="/login">
-                <PrimaryButton className="text-sm">Logga in</PrimaryButton>
+                <Button variant="default" className="text-sm">Logga in</Button>
               </Link>
             )}
           </div>
