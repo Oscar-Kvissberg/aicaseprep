@@ -55,84 +55,56 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left side - Static Illustration */}
-      <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-white">
-        <div className="absolute inset-0 flex items-center justify-center p-12">
-          <div className="text-center relative z-10">
-            <h1 className="text-5xl font-bold text-indigo-900 mb-6 tracking-tight">
-              Case Interview <span className="text-indigo-600">Preparation</span>
-            </h1>
-            <p className="text-lg text-indigo-700 mb-8 max-w-lg mx-auto">
-              Master your consulting interviews with our expert guidance
-            </p>
-            <div className="relative w-full max-w-2xl mx-auto aspect-square">
-              <Image
-                src="/images/mike.png"
-                alt="Case Interview Expert"
-                fill
-                className="object-contain scale-125 drop-shadow-xl relative z-10"
-                priority
-              />
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="w-full max-w-md p-8 space-y-8">
+        <div className="text-center">
+          <div className="flex justify-center mb-2">
+            <Image src="/logo.png" alt="Case" width={100} height={100} />
           </div>
+          <h2 className="text-3xl font-bold text-gray-900">
+            Välkommen tillbaka!
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Logga in för att fortsätta till ditt konto
+          </p>
         </div>
-      </div>
 
-      {/* Right side - Login form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
-        <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="h-12 w-12 bg-indigo-600 rounded-xl flex items-center justify-center transform rotate-12">
-                <span className="text-white text-2xl font-bold transform -rotate-12">F</span>
-              </div>
+        {message && (
+          <div className={`p-4 rounded-lg text-sm ${
+            message.includes('Konto skapat') 
+              ? 'bg-green-50 text-green-700 border border-green-200' 
+              : 'bg-red-50 text-red-700 border border-red-200'
+          }`}>
+            {message}
+          </div>
+        )}
+
+        <div className="mt-8 space-y-6">
+          <PrimaryButton
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center px-4 py-3 text-base"
+            icon={<GoogleIcon />}
+          >
+            {isLoading ? 'Loggar in...' : 'Fortsätt med Google'}
+          </PrimaryButton>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">
-              Välkommen tillbaka!
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              Logga in för att fortsätta till ditt konto
-            </p>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">eller</span>
+            </div>
           </div>
 
-          {message && (
-            <div className={`p-4 rounded-lg text-sm ${
-              message.includes('Konto skapat') 
-                ? 'bg-green-50 text-green-700 border border-green-200' 
-                : 'bg-red-50 text-red-700 border border-red-200'
-            }`}>
-              {message}
-            </div>
-          )}
-
-          <div className="mt-8 space-y-6">
-            <PrimaryButton
-              onClick={handleGoogleLogin}
-              disabled={isLoading}
-              className="w-full flex items-center justify-center px-4 py-3 text-base"
-              icon={<GoogleIcon />}
+          <div className="text-center">
+            <Link 
+              href="/register" 
+              className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
             >
-              {isLoading ? 'Loggar in...' : 'Fortsätt med Google'}
-            </PrimaryButton>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">eller</span>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <Link 
-                href="/register" 
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
-              >
-                Har du inget konto? Skapa ett här
-              </Link>
-            </div>
+              Har du inget konto? Skapa ett här
+            </Link>
           </div>
         </div>
       </div>

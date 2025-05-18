@@ -202,7 +202,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Populära Business cases</h2>
             <Link href="/cases">
-              <Button variant="outline" size="sm">
+              <Button variant="outline">
                 Utforska alla case
               </Button>
             </Link>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Nya Case</h2>
             <Link href="/cases">
-              <Button variant="outline" size="sm">
+              <Button variant="outline">
                 Utforska alla case
               </Button>
             </Link>
@@ -224,7 +224,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Case med garanterad kvalitet</h2>
             <Link href="/cases">
-              <Button variant="outline" size="sm">
+              <Button variant="outline">
                 Utforska alla case
               </Button>
             </Link>
@@ -235,7 +235,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevanta Case för dig</h2>
             <Link href="/cases">
-              <Button variant="outline" size="sm">
+              <Button variant="outline">
                 Utforska alla case
               </Button>
             </Link>
