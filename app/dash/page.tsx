@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase'
 import { toast } from 'react-hot-toast'
 
 import { CaseCards } from '../components/case-cards'
+import { SkeletonCaseCards } from '../components/skeleton-case-cards'
 import { InfoFooter } from '../components/info_footer'
 import { Button } from '../components/ui/button'
 
@@ -53,7 +54,6 @@ export default function DashboardPage() {
 
     async function fetchUserData() {
       if (!session?.user?.id) {
-        setLoading(false);
         return;
       }
 
@@ -79,9 +79,6 @@ export default function DashboardPage() {
         });
         if (!isMounted) return;
         setError('Failed to load your data. Please try again later.');
-      } finally {
-        if (!isMounted) return;
-        setLoading(false);
       }
     }
 
@@ -111,12 +108,12 @@ export default function DashboardPage() {
         console.error('Exception when fetching business cases:', err);
         toast.error('Kunde inte hämta case');
       } finally {
+        if (!isMounted) return;
         setLoading(false);
       }
     }
 
-    fetchUserData();
-    fetchBusinessCases();
+    Promise.all([fetchUserData(), fetchBusinessCases()]);
 
     return () => {
       isMounted = false;
@@ -126,8 +123,47 @@ export default function DashboardPage() {
   // Show loading spinner while session is loading
   if (status === 'loading' || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex flex-col min-h-screen">
+        <NavBar />
+        <div className="container mx-auto px-4 py-8 mt-16">
+          <div className="mb-12">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-600">Populära Business cases</h2>
+              <Button variant="outline" disabled>
+                Utforska alla case
+              </Button>
+            </div>
+            <SkeletonCaseCards />
+          </div>
+          <div className="mb-12">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-600">Nya Case</h2>
+              <Button variant="outline" disabled>
+                Utforska alla case
+              </Button>
+            </div>
+            <SkeletonCaseCards />
+          </div>
+          <div className="mb-12">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-600">Case med garanterad kvalitet</h2>
+              <Button variant="outline" disabled>
+                Utforska alla case
+              </Button>
+            </div>
+            <SkeletonCaseCards />
+          </div>
+          <div className="mb-12">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevanta Case för dig</h2>
+              <Button variant="outline" disabled>
+                Utforska alla case
+              </Button>
+            </div>
+            <SkeletonCaseCards />
+          </div>
+          <InfoFooter />
+        </div>
       </div>
     );
   }
