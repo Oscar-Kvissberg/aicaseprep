@@ -105,7 +105,11 @@ Kom ihåg att riktiga transaktioner i produktion kommer att medföra Stripe's st
 
 - (klar) Göra så att man kan se startsida utan att vara inloggad, och när man klickar logga in så kommer man till logga in sidan.. 
 
-- (senare) utverdiringssidan... 
+- (senare) utverderingssidan... 
+
+- (senare) fixa till profil sidan... gör så man kan se progress som på lego starwars / github pushes
+
+
 
 ------------------------------------------------------------------------------------------------------------||
 ------------------------------------------------------------------------------------------------------------||
@@ -117,15 +121,19 @@ Kom ihåg att riktiga transaktioner i produktion kommer att medföra Stripe's st
 
 - () fixa så att alla knappar i nav och alla andra har en vanlig importerad button med rounded lg
 
-- () fixa "mina credits hover menyn som kommer ner... (ser fult ut) 
+- () fixa "mina credits2 hover menyn som kommer ner... (ser fult ut) 
+
+- () fixa buy credits modalen... (ligger som en komponent)
 
 - () fixa med logga på login och dash sida
 
-- (klar snart) fixa skeleton cards på dash sidan och på case library sidan... 
+- (klar) fixa skeleton cards på dash sidan och på case library sidan... 
 
 - () fixa till case intro sidan... lixom sidan precis innan man startar case
 
 - () fixa till dialogrutan så att allt ser bra ut
+
+- () fixa till innehållet i footer
 
 - (senare) fixa en landningssida när man är klar med caset... typ en utverderingssida med kanske en rating senare 
 
