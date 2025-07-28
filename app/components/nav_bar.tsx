@@ -13,8 +13,7 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
+  NavigationMenuTrigger
 } from "@/app/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
 import { useEffect, useState } from 'react'
