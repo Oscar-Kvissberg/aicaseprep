@@ -8,6 +8,7 @@ import Image, { ImageLoaderProps } from 'next/image'
 import toast from 'react-hot-toast'
 import { Whiteboard } from '@/app/components/whiteboard'
 import { supabase } from '@/lib/supabase'
+import { Button } from '@/app/components/ui/button'
 
 
 interface BusinessCase {
@@ -303,9 +304,8 @@ function CaseInterviewContent() {
           return;
         }
 
-        // Show success message and redirect
-        toast.success('Grattis! Du har slutfört alla sektioner i detta case.');
-        router.push('/cases');
+        // Redirect to completion page
+        router.push(`/case-completed?caseId=${caseId}`);
       } catch (err) {
         console.error('Error completing case:', err);
         toast.error('Kunde inte slutföra caset');
@@ -567,12 +567,12 @@ function CaseInterviewContent() {
                   </div>
                 </div>
                 
-                <button
+                <Button
                   onClick={handleStartCase}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium"
+                  variant="outline"
                 >
                   Starta Case
-                </button>
+                </Button>
               </div>
             )}
           </div>
