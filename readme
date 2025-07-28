@@ -123,7 +123,7 @@ Kom ihåg att riktiga transaktioner i produktion kommer att medföra Stripe's st
 
 - () fixa "mina credits2 hover menyn som kommer ner... (ser fult ut) 
 
-- () fixa buy credits modalen... (ligger som en komponent)
+- () fixa buy credits modalen... (ligger som en komponent)... typ som på uppgraderingssidan här... https://app.winninghunter.com/home 
 
 - () fixa med logga på login och dash sida
 
@@ -133,7 +133,7 @@ Kom ihåg att riktiga transaktioner i produktion kommer att medföra Stripe's st
 
 - () fixa till dialogrutan så att allt ser bra ut
 
-- () fixa till innehållet i footer
+- () fixa till innehållet i footer... ska bara vara med lite information och lite vilka vi är... checka in viaplays footer
 
 - (senare) fixa en landningssida när man är klar med caset... typ en utverderingssida med kanske en rating senare 
 

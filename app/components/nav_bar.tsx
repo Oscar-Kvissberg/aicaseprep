@@ -74,68 +74,50 @@ export function NavBar() {
       <div className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 z-40">
         <div className="h-full flex items-center justify-between px-4 ml-16">
           {/* Left side - Navigation */}
-          <NavigationMenu>
+          <NavigationMenu delayDuration={0} skipDelayDuration={0}>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link href="/dash">
-                  <span className={navigationMenuTriggerStyle()}>
-                    <HomeIcon className="w-5 h-5 mr-2 inline" />
-                    Hem
-                  </span>
-                </Link>
+                <Button variant="ghost" asChild>
+                  <Link href="/dash">
+                    <span className="flex items-center">
+                      <HomeIcon className="w-5 h-5 mr-2" />
+                      Hem
+                    </span>
+                  </Link>
+                </Button>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/cases">
-                  <span className={navigationMenuTriggerStyle()}>
-                    <BriefcaseIcon className="w-5 h-5 mr-2 inline" />
-                    Casebank
-                  </span>
-                </Link>
+                <Button variant="ghost" asChild>
+                  <Link href="/cases">
+                    <span className="flex items-center">
+                      <BriefcaseIcon className="w-5 h-5 mr-2" />
+                      Casebank
+                    </span>
+                  </Link>
+                </Button>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger>
-                  <BookOpenIcon className="w-5 h-5 mr-2 inline" />
-                  Tips & Guider
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                    <li className="row-span-3">
-                      <NavigationMenuLink asChild>
-                        <a
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                          href="/tips"
-                        >
-                          <div className="mb-2 mt-4 text-lg font-medium">
-                            Case Interview Guide
-                          </div>
-                          <p className="text-sm leading-tight text-muted-foreground">
-                            Omfattande guide för att förbereda dig inför case-intervjuer.
-                          </p>
-                        </a>
-                      </NavigationMenuLink>
-                    </li>
-                    <ListItem href="/tips/frameworks" title="Frameworks">
-                      Lär dig de viktigaste ramverken för case-intervjuer.
-                    </ListItem>
-                    <ListItem href="/tips/math" title="Mental Math">
-                      Tips och övningar för att förbättra din huvudräkning.
-                    </ListItem>
-                    <ListItem href="/tips/structure" title="Structure">
-                      Hur du strukturerar dina svar och presentationer.
-                    </ListItem>
-                  </ul>
-                </NavigationMenuContent>
+                <Button variant="ghost" asChild>
+                  <Link href="/tips">
+                    <span className="flex items-center">
+                      <BookOpenIcon className="w-5 h-5 mr-2" />
+                      Tips & Guider
+                    </span>
+                  </Link>
+                </Button>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link href="/profile">
-                  <span className={navigationMenuTriggerStyle()}>
-                    <UserCircleIcon className="w-5 h-5 mr-2 inline" />
-                    Profil
-                  </span>
-                </Link>
+                <Button variant="ghost" asChild>
+                  <Link href="/profile">
+                    <span className="flex items-center">
+                      <UserCircleIcon className="w-5 h-5 mr-2" />
+                      Profil
+                    </span>
+                  </Link>
+                </Button>
               </NavigationMenuItem>
 
             </NavigationMenuList>
@@ -143,15 +125,15 @@ export function NavBar() {
 
           {/* Right side - Profile info and logout */}
           <div className="flex items-center gap-4">
-            <NavigationMenu>
+            <NavigationMenu delayDuration={0} skipDelayDuration={0} className="[&_[data-slot=navigation-menu-viewport]]:rounded-xl">
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>
-                    <CreditCardIcon className="w-5 h-5 mr-2 inline" />
+                    <CreditCardIcon className="w-5 h-5 mr-2" />
                     {creditBalance} Credits
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="p-4 w-[300px]">
+                  <NavigationMenuContent className="rounded-xl">
+                    <div className="p-4 w-[300px] bg-background shadow-xs rounded-xl">
                       <div className="mb-4">
                         <h3 className="text-lg font-semibold mb-2">Dina Credits</h3>
                         <p className="text-3xl font-bold text-purple-600">{creditBalance}</p>
