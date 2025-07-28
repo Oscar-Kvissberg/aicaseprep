@@ -63,6 +63,14 @@ function CaseInterviewContent() {
   const [hint, setHint] = useState<string | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
+  const chatContainerRef = useRef<HTMLDivElement>(null)
+
+  // Auto-scroll to bottom when conversation updates
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [conversationHistory, isAiResponding]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -443,7 +451,7 @@ function CaseInterviewContent() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-8">
         <div className="mb-6">
           <div className="w-32 h-4 bg-gray-200 rounded animate-pulse"></div>
         </div>
@@ -516,7 +524,7 @@ function CaseInterviewContent() {
   // If no section is selected, show the case overview with chat interface
   if (!currentSection) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-8">
         <div className="mb-6">
           <Link href="/cases" className="text-blue-500 hover:underline">
             &larr; Tillbaka till case biblioteket
@@ -583,7 +591,7 @@ function CaseInterviewContent() {
 
   // Show the current section with chat interface
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 md:px-8 lg:px-24 xl:px-36 py-8">
       <div className="mb-6">
         <button
           onClick={() => router.push('/cases')}
@@ -605,51 +613,58 @@ function CaseInterviewContent() {
             </div>
           </div>
           
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-            <div className="prose max-w-none">
-              <div className="flex justify-between items-start mb-4">
-                <p className="text-lg">
-                  {businessCase.description}
-                </p>
-                {hint && (
-                  <button
-                    type="button"
-                    onClick={() => setShowHint(!showHint)}
-                    className="ml-4 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg flex items-center gap-2 transition-colors"
-                    title="Få hint"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                    </svg>
-                    <span>Hint</span>
-                  </button>
-                )}
-              </div>
-              {showHint && hint && (
-                <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-purple-500">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                      </svg>
+          <div className="lg:grid lg:grid-cols-3 lg:gap-6">
+            {/* Vänster kolumn - Beskrivning och hint */}
+            <div className="lg:col-span-1 mb-6 lg:mb-0">
+              <div className="bg-gray-50 p-4 rounded-lg sticky top-4">
+                <div className="prose max-w-none">
+                  <h3 className="text-lg font-semibold mb-3">Case Information</h3>
+                  <p className="text-sm mb-4">
+                    {businessCase.description}
+                  </p>
+                  {hint && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => setShowHint(!showHint)}
+                        className="w-full px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                        title="Få hint"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                        </svg>
+                        <span>Visa hint</span>
+                      </button>
+                      {showHint && hint && (
+                        <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                          <div className="flex items-start">
+                            <div className="flex-shrink-0 mr-3">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-purple-500">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                              </svg>
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="text-sm font-semibold text-purple-800 mb-1">Hint</h4>
+                              <p className="text-sm text-purple-700">{hint}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-purple-800 mb-1">Hint</h4>
-                      <p className="text-sm text-purple-700">{hint}</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-          
-          {!session ? (
-            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
-              <p>Vänligen <Link href="/login" className="underline">logga in</Link> för att skicka in ditt svar och få feedback.</p>
-            </div>
-          ) : (
-            <div>
-              <div className="bg-gray-50 p-4 rounded-lg mb-6 h-[60vh] overflow-y-auto">
+
+            {/* Höger kolumn - Chat */}
+            <div className="lg:col-span-2">
+              {!session ? (
+                <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
+                  <p>Vänligen <Link href="/login" className="underline">logga in</Link> för att skicka in ditt svar och få feedback.</p>
+                </div>
+              ) : (
+                <div>
+                  <div className="bg-gray-50 p-4 rounded-lg mb-6 h-[60vh] overflow-y-auto" ref={chatContainerRef}>
                 {!conversationHistory ? (
                   <div className="flex justify-start mb-4 items-start">
                     <div className="flex-shrink-0 mr-3">
@@ -661,7 +676,7 @@ function CaseInterviewContent() {
                         className="rounded-full"
                       />
                     </div>
-                    <div className="max-w-[80%] p-3 rounded-lg bg-green-100 text-green-800 rounded-tl-none">
+                    <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 rounded-tl-none">
                       <div className="text-xs font-semibold mb-1">Kund</div>
                       <div className="whitespace-pre-line">
                         {currentSection.prompt}
@@ -719,8 +734,8 @@ function CaseInterviewContent() {
                           <div 
                             className={`max-w-[80%] p-3 rounded-lg ${
                               isUser 
-                                ? 'bg-blue-100 text-blue-800 rounded-tr-none' 
-                                : 'bg-green-100 text-green-800 rounded-tl-none'
+                                ? 'bg-blue-400 text-white rounded-tr-none' 
+                                : 'bg-gray-100 text-gray-800 rounded-tl-none'
                             }`}
                           >
                             <div className="text-xs font-semibold mb-1">
@@ -749,7 +764,7 @@ function CaseInterviewContent() {
                                         alt={altText}
                                         width={400}
                                         height={300}
-                                        className="rounded-lg border border-gray-200 max-w-full h-auto"
+                                        className="rounded-lg max-w-full h-auto"
                                         style={{ maxHeight: '200px', objectFit: 'contain' }}
                                         unoptimized
                                       />
@@ -777,12 +792,12 @@ function CaseInterviewContent() {
                             className="rounded-full"
                           />
                         </div>
-                        <div className="max-w-[80%] p-3 rounded-lg bg-green-100 text-green-800 rounded-tl-none">
+                        <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 rounded-tl-none">
                           <div className="text-xs font-semibold mb-1">Kund</div>
                           <div className="flex items-center space-x-2">
-                            <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                            <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                            <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                            <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                            <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                            <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                           </div>
                         </div>
                       </div>
@@ -897,6 +912,8 @@ function CaseInterviewContent() {
           )}
         </div>
       </div>
+    </div>
+  </div>
 
       {showWhiteboard && (
         <Whiteboard

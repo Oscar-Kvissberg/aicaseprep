@@ -249,7 +249,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Nya Case</h2>
             <Link href="/cases">
-              <Button variant="outline">
+              <Button variant="orange_outline_fade">
                 Utforska alla case
               </Button>
             </Link>
