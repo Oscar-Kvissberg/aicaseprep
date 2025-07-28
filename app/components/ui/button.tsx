@@ -18,7 +18,7 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         orange_outline_fade:
-          "bg-gradient-to-br from-orange-300 via-orange-400 to-yellow-400 text-black shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:from-orange-400 hover:via-orange-500 hover:to-yellow-500 hover:shadow-[inset_0_2px_6px_rgba(0,0,0,0.15)] transition-all duration-200 dark:from-orange-400 dark:via-orange-500 dark:to-yellow-500 dark:hover:from-orange-500 dark:hover:via-orange-600 dark:hover:to-yellow-600",
+          "bg-gradient-to-br from-p-custom via-s-custom to-p-custom text-black shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:from-p-custom/90 hover:via-s-custom/90 hover:to-p-custom/90 hover:shadow-[inset_0_2px_6px_rgba(0,0,0,0.15)] transition-all duration-200 dark:from-p-custom/90 dark:via-s-custom/90 dark:to-p-custom/90 dark:hover:from-p-custom/80 dark:hover:via-s-custom/80 dark:hover:to-p-custom/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",

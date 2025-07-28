@@ -5,9 +5,9 @@ import { authOptions } from '@/app/api/auth/config';
 
 // These IDs will come from Stripe after we create the products
 const CREDITS_PRICE_MAP = {
-  '3': 'price_1RFimkRiJA2ZIwb0rC19TT8a',  // Replace with the actual price ID from Stripe
-  '5': 'price_1RFinPRiJA2ZIwb0CSX0Dh9H',  // Replace with the actual price ID from Stripe
-  '10': 'price_1RFio7RiJA2ZIwb0o2k2OR1e'  // Replace with the actual price ID from Stripe
+  '3': 'price_1RpzcDRiJA2ZIwb0BDNY2YSS',  // Replace with the actual price ID from Stripe
+  '5': 'price_1RpzdVRiJA2ZIwb0aBSIZRKC',  // Replace with the actual price ID from Stripe
+  '10': 'price_1RpzetRiJA2ZIwb0P9PwEkPx'  // Replace with the actual price ID from Stripe
 };
 
 export async function POST(request: Request) {

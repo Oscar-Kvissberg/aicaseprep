@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-import { PrimaryButton } from './ui/primary_button';
+import { Button } from './ui/button';
 import toast from 'react-hot-toast';
 
 // These IDs should match the ones in the server-side CREDITS_PRICE_MAP
 const CREDITS_PRICE_MAP = {
-  '3': 'price_1RFimkRiJA2ZIwb0rC19TT8a',
-  '5': 'price_1RFinPRiJA2ZIwb0CSX0Dh9H',
-  '10': 'price_1RFio7RiJA2ZIwb0o2k2OR1e'
+  '3': 'price_1RpzcDRiJA2ZIwb0BDNY2YSS',
+  '5': 'price_1RpzdVRiJA2ZIwb0aBSIZRKC',
+  '10': 'price_1RpzetRiJA2ZIwb0P9PwEkPx'
 };
 
 interface CreditOption {
@@ -22,17 +22,17 @@ interface CreditOption {
 const CREDIT_OPTIONS: CreditOption[] = [
   {
     amount: 3,
-    price: 99,
+    price: 15,
     description: 'Starter Pack - Perfect for trying out the platform'
   },
   {
     amount: 5,
-    price: 149,
+    price: 24,
     description: 'Popular - Great value for regular practice'
   },
   {
     amount: 10,
-    price: 249,
+    price: 46,
     description: 'Pro Pack - Best value for serious preparation'
   }
 ];
@@ -91,18 +91,19 @@ export function BuyCredits() {
       {CREDIT_OPTIONS.map((option) => (
         <div
           key={option.amount}
-          className="bg-white rounded-lg shadow-md p-6 flex flex-col"
+          className="rounded-lg shadow-md p-6 flex flex-col border-3 border-p-custom bg-white"
         >
           <h3 className="text-2xl font-bold mb-2">{option.amount} Credits</h3>
           <p className="text-gray-600 mb-4 flex-grow">{option.description}</p>
           <div className="text-3xl font-bold mb-4">{option.price} kr</div>
-          <PrimaryButton
+          <Button
+            variant="orange_outline_fade"
             onClick={() => handlePurchase(option)}
             disabled={loading !== null || !session?.user?.id}
             className="w-full"
           >
             {loading === option.amount ? 'Processing...' : 'Buy Now'}
-          </PrimaryButton>
+          </Button>
         </div>
       ))}
     </div>

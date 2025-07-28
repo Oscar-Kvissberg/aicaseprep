@@ -54,6 +54,23 @@ function CaseInterviewContent() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [conversationHistory, setConversationHistory] = useState<string>('')
+  
+  // Load conversation history from sessionStorage on mount
+  useEffect(() => {
+    if (sectionId) {
+      const savedHistory = sessionStorage.getItem(`chat-history-${caseId}-${sectionId}`)
+      if (savedHistory) {
+        setConversationHistory(savedHistory)
+      }
+    }
+  }, [caseId, sectionId])
+  
+  // Save conversation history to sessionStorage whenever it changes
+  useEffect(() => {
+    if (sectionId && conversationHistory) {
+      sessionStorage.setItem(`chat-history-${caseId}-${sectionId}`, conversationHistory)
+    }
+  }, [conversationHistory, caseId, sectionId])
   const [isComplete, setIsComplete] = useState(false)
   const [isAiResponding, setIsAiResponding] = useState(false)
   const [showWhiteboard, setShowWhiteboard] = useState(false)
@@ -128,8 +145,11 @@ function CaseInterviewContent() {
             setCurrentSection(section)
             setHint(section.hint || null)
             console.log('Current section with image:', section);
-            // Reset conversation history when changing sections
-            setConversationHistory('')
+            // Only reset conversation history if it's empty (new section)
+            const savedHistory = sessionStorage.getItem(`chat-history-${caseId}-${sectionId}`)
+            if (!savedHistory) {
+              setConversationHistory('')
+            }
             setIsComplete(false)
             setShowHint(false)
           }
@@ -624,17 +644,18 @@ function CaseInterviewContent() {
                   </p>
                   {hint && (
                     <div>
-                      <button
+                      <Button
                         type="button"
                         onClick={() => setShowHint(!showHint)}
-                        className="w-full px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                        variant="orange_outline_fade"
+                        className="w-full"
                         title="Få hint"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                         </svg>
                         <span>Visa hint</span>
-                      </button>
+                      </Button>
                       {showHint && hint && (
                         <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
                           <div className="flex items-start">

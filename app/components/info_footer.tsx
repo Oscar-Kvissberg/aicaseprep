@@ -47,7 +47,7 @@ export function InfoFooter() {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Social Media Links */}
             <div className="flex space-x-6">
-              <Link href="https://www.linkedin.com/company/catalina-software-solutions" className="text-gray-400 hover:text-gray-500" target="_blank" rel="noopener noreferrer">
+              <Link href="https://www.linkedin.com/company/catalina-software-solutions" className="text-gray-400 hover:text-p-custom" target="_blank" rel="noopener noreferrer">
                 <span className="sr-only">LinkedIn</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.762 0 5-2.24 5-5v-14c0-2.76-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.793-1.75-1.768s.784-1.764 1.75-1.764 1.75.789 1.75 1.764-.784 1.768-1.75 1.768zm13.5 11.268h-3v-5.604c0-3.368-4-3.111-4 0v5.604h-3v-10h3v1.354c1.396-2.586 7-2.777 7 2.476v6.17z" clipRule="evenodd" />

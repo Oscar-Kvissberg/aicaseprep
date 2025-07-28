@@ -50,6 +50,8 @@ body {
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-p-custom: var(--p-custom);
+  --color-s-custom: var(--s-custom);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -89,6 +91,8 @@ body {
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.606 0.25 292.717);
+  --p-custom: oklch(0.65 0.25 45);
+  --s-custom: oklch(0.75 0.15 35);
 }
 
 .dark {
@@ -123,7 +127,10 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.541 0.281 293.009);
+  --p-custom: oklch(0.7 0.3 45);
+  --s-custom: oklch(0.8 0.2 35);
 }
+
 
 @layer base {
   * {
