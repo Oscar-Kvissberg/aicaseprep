@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/app/components/ui/button'
 import { CheckCircleIcon, TrophyIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { GradientBorderButton } from '../components/ui/s_button'
 
 interface BusinessCase {
   id: string
@@ -75,7 +76,7 @@ function CaseCompletedContent() {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <p className="mb-4">Case not found</p>
-          <Button asChild>
+          <Button asChild variant="primary_c2a">
             <Link href="/cases">
               Tillbaka till case biblioteket
             </Link>
@@ -127,19 +128,19 @@ function CaseCompletedContent() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
             onClick={() => router.push('/cases')}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg"
+            variant="primary_c2a"
+            className="w-1/3 h-10"
           >
             <ArrowRightIcon className="w-5 h-5 mr-2" />
             Prova fler cases
           </Button>
           
-          <Button
-            variant="outline"
+          <GradientBorderButton
             onClick={() => router.push('/dash')}
-            className="px-6 py-3 rounded-lg"
+            className="w-1/3 h-10 text-center items-center justify-center flex"
           >
             Tillbaka till dashboard
-          </Button>
+          </GradientBorderButton>
         </div>
       </div>
     </div>

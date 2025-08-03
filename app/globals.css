@@ -91,8 +91,37 @@ body {
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.606 0.25 292.717);
-  --p-custom: oklch(0.65 0.25 45);
-  --s-custom: oklch(0.75 0.15 35);
+  --p-custom: oklch(0.65 0.24 308);
+  --s-custom: oklch(0.73 0.21 20);
+}
+
+.gradient-border {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(to right, var(--p-custom), var(--s-custom)) border-box;
+  transition: all 0.2s ease;
+}
+
+.gradient-border:hover {
+  background: linear-gradient(to right, var(--p-custom), var(--s-custom)) padding-box,
+              linear-gradient(to right, var(--p-custom), var(--s-custom)) border-box;
+}
+
+.gradient-border-normal {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(to right, var(--p-custom), var(--s-custom)) border-box;
+  transition: all 0.2s ease;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, var(--p-custom), var(--s-custom));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-icon {
+  fill: url(#gradient);
 }
 
 .dark {

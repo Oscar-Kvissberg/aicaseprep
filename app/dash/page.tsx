@@ -11,6 +11,7 @@ import { CaseCards } from '../components/case-cards'
 import { SkeletonCaseCards } from '../components/skeleton-case-cards'
 import { InfoFooter } from '../components/info_footer'
 import { Button } from '../components/ui/button'
+import { GradientBorderButton } from '../components/ui/s_button'
 
 interface BusinessCase {
   id: string
@@ -238,9 +239,9 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Populära Business cases</h2>
             <Link href="/cases">
-              <Button variant="outline">
+              <GradientBorderButton>
                 Utforska alla case
-              </Button>
+              </GradientBorderButton>
             </Link>
           </div>
           <CaseCards data={caseCardsData} />
@@ -249,9 +250,9 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Nya Case</h2>
             <Link href="/cases">
-              <Button variant="orange_outline_fade">
+              <GradientBorderButton>
                 Utforska alla case
-              </Button>
+              </GradientBorderButton>
             </Link>
           </div>
           <CaseCards data={newCasesData} />
@@ -260,9 +261,9 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Case med garanterad kvalitet</h2>
             <Link href="/cases">
-              <Button variant="outline">
+              <GradientBorderButton>
                 Utforska alla case
-              </Button>
+              </GradientBorderButton>
             </Link>
           </div>
           <CaseCards data={ensuredCasesData} />
@@ -271,9 +272,9 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevanta Case för dig</h2>
             <Link href="/cases">
-              <Button variant="outline">
+              <GradientBorderButton>
                 Utforska alla case
-              </Button>
+              </GradientBorderButton>
             </Link>
           </div>
           <CaseCards data={relevantCasesData} />

@@ -17,8 +17,10 @@ const buttonVariants = cva(
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        orange_outline_fade:
-          "bg-gradient-to-br from-p-custom via-s-custom to-p-custom text-black shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] hover:from-p-custom/90 hover:via-s-custom/90 hover:to-p-custom/90 hover:shadow-[inset_0_2px_6px_rgba(0,0,0,0.15)] transition-all duration-200 dark:from-p-custom/90 dark:via-s-custom/90 dark:to-p-custom/90 dark:hover:from-p-custom/80 dark:hover:via-s-custom/80 dark:hover:to-p-custom/80",
+        primary_c2a:
+          "text-white bg-gradient-to-r from-p-custom to-s-custom hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-p-custom/20 dark:focus:ring-p-custom/40 font-medium text-sm px-5 py-2.5 text-center",
+        custom_outline_fade:
+          "bg-white text-gray-900 border-2 border-p-custom hover:border-s-custom transition-all duration-200 focus:ring-4 focus:outline-none focus:ring-p-custom/20 dark:focus:ring-p-custom/40",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",

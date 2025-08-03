@@ -9,6 +9,11 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Kontrollera om vi ska använda lokal Ollama eller OpenAI
+const useLocalModel = process.env.USE_LOCAL_MODEL === 'true';
+console.log('USE_LOCAL_MODEL env var:', process.env.USE_LOCAL_MODEL);
+console.log('useLocalModel calculated:', useLocalModel);
+
 async function analyzeImage(imageUrl: string): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
@@ -289,17 +294,52 @@ export async function POST(request: Request) {
     console.log('=== FINAL PROMPT ===');
     console.log(prompt);
     console.log('=== END FINAL PROMPT ===');
+    console.log('useLocalModel:', useLocalModel);
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { role: "user", content: prompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 1000,
-    });
+    let feedback: string;
 
-    const feedback = completion.choices[0].message.content || "No feedback generated.";
+    if (useLocalModel) {
+      // Använd lokal Ollama-modell
+      try {
+        const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'phi3:latest',
+            prompt: prompt,
+            stream: false,
+            options: {
+              temperature: 0.7,
+              num_predict: 1000,
+            }
+          })
+        });
+
+        if (!ollamaResponse.ok) {
+          throw new Error(`Ollama request failed: ${ollamaResponse.statusText}`);
+        }
+
+        const ollamaData = await ollamaResponse.json();
+        feedback = ollamaData.response || "No feedback generated.";
+      } catch (error) {
+        console.error('Error with Ollama:', error);
+        feedback = "Kunde inte generera feedback med lokal modell.";
+      }
+    } else {
+      // Använd OpenAI
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000,
+      });
+
+      feedback = completion.choices[0].message.content || "No feedback generated.";
+    }
     
     // Check if criteria are met
     const isComplete = feedback.includes("KRITERIER UPPFYLLDA: Ja");

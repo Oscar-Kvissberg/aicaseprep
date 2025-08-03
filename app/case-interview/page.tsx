@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import { Whiteboard } from '@/app/components/whiteboard'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/app/components/ui/button'
+import { GradientBorderButton } from '../components/ui/s_button'
 
 
 interface BusinessCase {
@@ -292,6 +293,16 @@ function CaseInterviewContent() {
           toast.success('Välkommen! Du har fått 2 krediter och en har använts för detta case. Lycka till!');
         }
         
+        // Rensa alla sessionStorage-nycklar för detta case när det startas om
+        const keysToRemove = [];
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          if (key && key.startsWith(`chat-history-${caseId}-`)) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach(key => sessionStorage.removeItem(key));
+        
         // Navigate to the first section
         router.push(`/case-interview?caseId=${caseId}&sectionId=${sections[0].id}`);
       } catch (error) {
@@ -476,7 +487,7 @@ function CaseInterviewContent() {
           <div className="w-32 h-4 bg-gray-200 rounded animate-pulse"></div>
         </div>
         
-        <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+        <div className="bg-white shadow-md rounded-xl overflow-hidden mb-8">
           <div className="p-6">
             {/* Title skeleton */}
             <div className="w-3/4 h-8 bg-gray-200 rounded mb-2 animate-pulse"></div>
@@ -551,7 +562,7 @@ function CaseInterviewContent() {
           </Link>
         </div>
         
-        <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+        <div className="bg-white shadow-md rounded-xl overflow-hidden mb-8">
           <div className="p-6">
             <h1 className="text-3xl font-bold mb-2">{businessCase.title}</h1>
             <div className="flex space-x-2 mb-4">
@@ -572,7 +583,7 @@ function CaseInterviewContent() {
               </div>
             ) : (
               <div className="mt-8">
-                <div className="bg-gray-50 p-6 rounded-lg mb-6">
+                <div className="bg-gray-50 p-6 rounded-xl mb-6">
                   <div className="prose max-w-none">
                     <p className="text-lg mb-6">
                       {businessCase.description}
@@ -597,7 +608,7 @@ function CaseInterviewContent() {
                 
                 <Button
                   onClick={handleStartCase}
-                  variant="outline"
+                  variant="primary_c2a"
                 >
                   Starta Case
                 </Button>
@@ -644,20 +655,18 @@ function CaseInterviewContent() {
                   </p>
                   {hint && (
                     <div>
-                      <Button
+                      <GradientBorderButton
                         type="button"
                         onClick={() => setShowHint(!showHint)}
-                        variant="orange_outline_fade"
-                        className="w-full"
-                        title="Få hint"
+                        className="w-full flex items-center justify-center gap-2"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                         </svg>
                         <span>Visa hint</span>
-                      </Button>
+                      </GradientBorderButton>
                       {showHint && hint && (
-                        <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <div className="mt-4 p-4 bg-gradient-to-r from-p-custom/20 to-s-custom/20 border border-purple-200 rounded-xl">
                           <div className="flex items-start">
                             <div className="flex-shrink-0 mr-3">
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-purple-500">
@@ -666,7 +675,7 @@ function CaseInterviewContent() {
                             </div>
                             <div className="flex-1">
                               <h4 className="text-sm font-semibold text-purple-800 mb-1">Hint</h4>
-                              <p className="text-sm text-purple-700">{hint}</p>
+                              <p className="text-sm text-purple-900">{hint}</p>
                             </div>
                           </div>
                         </div>
@@ -680,12 +689,12 @@ function CaseInterviewContent() {
             {/* Höger kolumn - Chat */}
             <div className="lg:col-span-2">
               {!session ? (
-                <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
+                <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-xl mb-6">
                   <p>Vänligen <Link href="/login" className="underline">logga in</Link> för att skicka in ditt svar och få feedback.</p>
                 </div>
               ) : (
                 <div>
-                  <div className="bg-gray-50 p-4 rounded-lg mb-6 h-[60vh] overflow-y-auto" ref={chatContainerRef}>
+                  <div className="bg-gray-50 p-4 rounded-xl mb-6 h-[60vh] overflow-y-auto" ref={chatContainerRef}>
                 {!conversationHistory ? (
                   <div className="flex justify-start mb-4 items-start">
                     <div className="flex-shrink-0 mr-3">
@@ -697,7 +706,7 @@ function CaseInterviewContent() {
                         className="rounded-full"
                       />
                     </div>
-                    <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 rounded-tl-none">
+                    <div className="max-w-[80%] p-3 rounded-xl bg-gray-100 text-gray-800 rounded-tl-none">
                       <div className="text-xs font-semibold mb-1">Kund</div>
                       <div className="whitespace-pre-line">
                         {currentSection.prompt}
@@ -709,7 +718,7 @@ function CaseInterviewContent() {
                               alt="Case graf/bild"
                               width={400}
                               height={300}
-                              className="rounded-lg border border-gray-200 max-w-full h-auto"
+                              className="rounded-xl border border-gray-200 max-w-full h-auto"
                               style={{ maxHeight: '200px', objectFit: 'contain' }}
                               unoptimized
                             />
@@ -753,9 +762,9 @@ function CaseInterviewContent() {
                             </div>
                           )}
                           <div 
-                            className={`max-w-[80%] p-3 rounded-lg ${
+                            className={`max-w-[80%] p-3 rounded-xl ${
                               isUser 
-                                ? 'bg-blue-400 text-white rounded-tr-none' 
+                                ? 'bg-gradient-to-r from-p-custom/90 to-s-custom/90 text-white rounded-tr-none' 
                                 : 'bg-gray-100 text-gray-800 rounded-tl-none'
                             }`}
                           >
@@ -785,7 +794,7 @@ function CaseInterviewContent() {
                                         alt={altText}
                                         width={400}
                                         height={300}
-                                        className="rounded-lg max-w-full h-auto"
+                                        className="rounded-xl max-w-full h-auto"
                                         style={{ maxHeight: '200px', objectFit: 'contain' }}
                                         unoptimized
                                       />
@@ -813,7 +822,7 @@ function CaseInterviewContent() {
                             className="rounded-full"
                           />
                         </div>
-                        <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 rounded-tl-none">
+                        <div className="max-w-[80%] p-3 rounded-xl bg-gray-100 text-gray-800 rounded-tl-none">
                           <div className="text-xs font-semibold mb-1">Kund</div>
                           <div className="flex items-center space-x-2">
                             <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
@@ -834,7 +843,7 @@ function CaseInterviewContent() {
                       <textarea
                         id="response"
                         rows={1}
-                        className="w-full px-4 py-3 pr-24 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-hidden"
+                        className="w-full px-4 py-3 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-hidden"
                         value={responseText}
                         onChange={(e) => {
                           setResponseText(e.target.value);
@@ -896,7 +905,7 @@ function CaseInterviewContent() {
                       Tryck Enter för att skicka, Shift+Enter för ny rad
                     </div>
                     {whiteboardImageUrl && (
-                      <div className="mt-2 p-2 bg-gray-100 rounded-lg flex items-center justify-between">
+                      <div className="mt-2 p-2 bg-gray-100 rounded-xl flex items-center justify-between">
                         <div className="flex items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-gray-500">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -917,17 +926,25 @@ function CaseInterviewContent() {
                   </div>
                 </form>
               ) : (
-                <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-                  <p>Grattis! Du har slutfört denna sektion. Klicka på &quot;Nästa sektion&quot; för att fortsätta.</p>
-                  <button
-                    onClick={handleNextSection}
-                    className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                  >
-                    {sections.findIndex(s => s.id === currentSection.id) < sections.length - 1 
-                      ? 'Nästa sektion' 
-                      : 'Slutför case'}
-                  </button>
-                </div>
+                                  <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                    <p>
+                      {sections.findIndex(s => s.id === currentSection.id) < sections.length - 1 
+                        ? 'Grattis! Du har slutfört denna sektion. Klicka på "Nästa sektion" för att fortsätta.'
+                        : 'Grattis! Du har slutfört detta case. Klicka på "Slutför case" för att avsluta.'
+                      }
+                    </p>
+                    <div className="mt-3">
+                    <Button
+                      onClick={handleNextSection}
+                      className="w-1/3"
+                      variant="primary_c2a"
+                    >
+                      {sections.findIndex(s => s.id === currentSection.id) < sections.length - 1 
+                        ? 'Nästa sektion' 
+                        : 'Slutför case'}
+                    </Button>
+                    </div>
+                  </div>
               )}
             </div>
           )}

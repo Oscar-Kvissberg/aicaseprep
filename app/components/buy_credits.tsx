@@ -37,7 +37,11 @@ const CREDIT_OPTIONS: CreditOption[] = [
   }
 ];
 
-export function BuyCredits() {
+interface BuyCreditsProps {
+  onClose?: () => void;
+}
+
+export function BuyCredits({ onClose }: BuyCreditsProps) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState<number | null>(null);
 
@@ -87,25 +91,45 @@ export function BuyCredits() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+    <div className="relative">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-10">
+      {/* Close button positioned relative to the rightmost card */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute -top-6 right-10 w-12 h-12 gradient-border-normal rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform duration-200 z-10"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            strokeWidth={2.5} 
+            stroke="currentColor" 
+            className="w-5 h-5 text-gray-600"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
       {CREDIT_OPTIONS.map((option) => (
         <div
           key={option.amount}
-          className="rounded-lg shadow-md p-6 flex flex-col border-3 border-p-custom bg-white"
+          className="rounded-xl shadow-md p-6 flex flex-col gradient-border-normal bg-white"
         >
           <h3 className="text-2xl font-bold mb-2">{option.amount} Credits</h3>
           <p className="text-gray-600 mb-4 flex-grow">{option.description}</p>
           <div className="text-3xl font-bold mb-4">{option.price} kr</div>
           <Button
-            variant="orange_outline_fade"
+            variant="primary_c2a"
             onClick={() => handlePurchase(option)}
             disabled={loading !== null || !session?.user?.id}
-            className="w-full"
+            className="w-full h-10"
           >
             {loading === option.amount ? 'Processing...' : 'Buy Now'}
           </Button>
         </div>
       ))}
+      </div>
     </div>
   );
 } 

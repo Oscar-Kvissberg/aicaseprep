@@ -4,6 +4,7 @@ import * as React from "react"
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { UserCircleIcon, BriefcaseIcon, ArrowLeftEndOnRectangleIcon, BookOpenIcon, HomeIcon, CreditCardIcon } from '@heroicons/react/24/outline'
 import { Button } from './ui/button'
 import { BuyCredits } from './buy_credits'
@@ -47,6 +48,7 @@ ListItem.displayName = "ListItem"
 
 export function NavBar() {
   const { data: session } = useSession()
+  const pathname = usePathname()
   const [creditBalance, setCreditBalance] = useState<number>(0)
   const [showBuyCredits, setShowBuyCredits] = useState(false)
 
@@ -76,7 +78,13 @@ export function NavBar() {
           <NavigationMenu delayDuration={0} skipDelayDuration={0}>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Button variant="ghost" asChild>
+                <Button 
+                  variant="ghost" 
+                  asChild
+                  className={cn(
+                    pathname === '/dash' && "gradient-border-normal rounded-xl"
+                  )}
+                >
                   <Link href="/dash">
                     <span className="flex items-center">
                       <HomeIcon className="w-5 h-5 mr-2" />
@@ -87,7 +95,13 @@ export function NavBar() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Button variant="ghost" asChild>
+                <Button 
+                  variant="ghost" 
+                  asChild
+                  className={cn(
+                    pathname === '/cases' && "gradient-border-normal rounded-xl"
+                  )}
+                >
                   <Link href="/cases">
                     <span className="flex items-center">
                       <BriefcaseIcon className="w-5 h-5 mr-2" />
@@ -98,7 +112,13 @@ export function NavBar() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Button variant="ghost" asChild>
+                <Button 
+                  variant="ghost" 
+                  asChild
+                  className={cn(
+                    pathname === '/tips' && "gradient-border-normal rounded-xl"
+                  )}
+                >
                   <Link href="/tips">
                     <span className="flex items-center">
                       <BookOpenIcon className="w-5 h-5 mr-2" />
@@ -109,7 +129,13 @@ export function NavBar() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Button variant="ghost" asChild>
+                <Button 
+                  variant="ghost" 
+                  asChild
+                  className={cn(
+                    pathname === '/profile' && "gradient-border-normal rounded-xl"
+                  )}
+                >
                   <Link href="/profile">
                     <span className="flex items-center">
                       <UserCircleIcon className="w-5 h-5 mr-2" />
@@ -126,10 +152,10 @@ export function NavBar() {
           <div className="flex items-center gap-4">
             <NavigationMenu delayDuration={0} skipDelayDuration={0} className="[&_[data-slot=navigation-menu-viewport]]:rounded-xl">
               <NavigationMenuList>
-                <NavigationMenuItem>
+                <NavigationMenuItem className="rounded-xl">
                   <NavigationMenuTrigger>
-                    <CreditCardIcon className="w-5 h-5 mr-2" />
-                    {creditBalance} Credits
+                    <CreditCardIcon className="w-5 h-5 mr-2 " />
+                    <span className="text-gray-900">{creditBalance} Credits</span>
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="rounded-xl">
                     <div className="p-4 w-[300px] bg-background shadow-xs rounded-xl">
@@ -139,7 +165,7 @@ export function NavBar() {
                         <p className="text-sm text-gray-500 mt-1">1 Credit = 1 Case</p>
                       </div>
                       <Button 
-                        variant="outline" 
+                        variant="primary_c2a" 
                         className="w-full"
                         onClick={() => setShowBuyCredits(true)}
                       >
@@ -173,7 +199,7 @@ export function NavBar() {
 
             {session ? (
               <Button
-                variant="outline"
+                variant="primary_c2a"
                 onClick={() => signOut({ callbackUrl: '/' })}
                 className="text-sm"
               >
@@ -195,12 +221,12 @@ export function NavBar() {
           className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
           onClick={() => setShowBuyCredits(false)}
         >
-          <div 
-            className="max-w-4xl w-full mx-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <BuyCredits />
-          </div>
+                      <div 
+              className="max-w-4xl w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <BuyCredits onClose={() => setShowBuyCredits(false)} />
+            </div>
         </div>
       )}
     </>
