@@ -129,14 +129,14 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 py-8">
         <Card className="mt-8">
           <CardHeader>
-            <CardTitle>Din Progress</CardTitle>
+            <CardTitle>Your Progress</CardTitle>
           </CardHeader>
           
           {!userProgress.some(p => p.case_id) ? (
             <p className="text-gray-600">
-              Du har inte börjat på några case än. 
+              You haven&apos;t started any cases yet. 
               <Link href="/cases" className="text-blue-500 hover:underline ml-1">
-                Börja öva nu!
+                Start practicing now!
               </Link>
             </p>
           ) : (
@@ -147,19 +147,19 @@ export default function ProfilePage() {
                   <div key={progress.case_id} className="border-b pb-4">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="text-lg font-medium">
-                        {progress.business_case?.title || 'Okänt Case'}
+                        {progress.business_case?.title || 'Unknown Case'}
                       </h3>
                       <span className={`px-2 py-1 rounded text-sm ${
                         progress.is_completed 
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {progress.is_completed ? 'Avklarat' : 'Pågående'}
+                        {progress.is_completed ? 'Completed' : 'In Progress'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-sm text-gray-600">
-                      <span>Avklarade sektioner: {progress.completed_sections} av {progress.total_sections}</span>
-                      <span>Senaste aktivitet: {new Date(progress.last_activity).toLocaleDateString('sv-SE')}</span>
+                      <span>Completed sections: {progress.completed_sections} of {progress.total_sections}</span>
+                      <span>Last activity: {new Date(progress.last_activity).toLocaleDateString('en-US')}</span>
                     </div>
                     <div className="mt-2 bg-gray-200 rounded-full h-2">
                       <div 

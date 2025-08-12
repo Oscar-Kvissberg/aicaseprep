@@ -29,9 +29,9 @@ export async function POST(request: Request) {
     const transcriptionResponse = await openai.audio.transcriptions.create({
       file: await import('fs').then(fs => fs.createReadStream(tempFilePath)),
       model: 'whisper-1',
-      language: 'sv',
+      language: 'en',
       response_format: 'json',
-      prompt: 'Transkribera exakt vad som sägs, utan att lägga till något extra.'
+      prompt: 'Transcribe exactly what is said, without adding anything extra.'
     })
 
     // Clean up the temporary file

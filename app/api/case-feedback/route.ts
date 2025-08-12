@@ -24,7 +24,7 @@ async function analyzeImage(imageUrl: string): Promise<string> {
           content: [
             { 
               type: "text", 
-              text: "Beskriv vad denna whiteboard-skiss visar. Var koncis och fokusera på det väsentliga. Svara på svenska och använd max 250 tecken." 
+              text: "Describe what this whiteboard sketch shows. Be concise and focus on the essentials. Respond in English and use a maximum of 250 characters" 
             },
             {
               type: "image_url",
@@ -62,10 +62,10 @@ async function getRelevantSections(caseId: string, userInput: string, sectionId:
 
     // Format the section data
     const formattedSection = `
-SEKTION: ${currentSection.title}
-FRÅGA: ${currentSection.prompt}
+SECTION: ${currentSection.title}
+QUESTION: ${currentSection.prompt}
 
-${currentSection.ai_instructions ? `AI-INSTRUKTIONER: ${currentSection.ai_instructions}` : ''}
+${currentSection.ai_instructions ? `AI-INSTRUCTIONS: ${currentSection.ai_instructions}` : ''}
 `;
 
     console.log('Current Section Data:', formattedSection);
@@ -226,30 +226,30 @@ export async function POST(request: Request) {
 
     // Generate interactive response using OpenAI
     const prompt =  `
-    Du är en senior konsult på en ledande managementkonsultfirma (t.ex. McKinsey, BCG eller Bain) som intervjuar en kandidat i ett caseintervjuformat.
-    Du är metodisk, professionell och coachande – men håller höga krav på tydliga, logiska resonemang.
+    You are a senior consultant at a leading management consulting firm (e.g., McKinsey, BCG, or Bain) interviewing a candidate in a case interview format.
+    You are methodical, professional, and coaching – but maintain high standards for clear, logical reasoning.
     
-    Dina uppgifter i denna interaktion är att:
-    1. Guida kandidaten genom caset steg för steg och ge relevant information vid behov
-    2. Säkerställa att kandidatens resonemang täcker sektionens kärnaspekter
-    3. Bedöma om kandidaten uppfyller samtliga kriterierier för att gå vidare
-    4. Om kandidaten uppfyller alla kriterier, ställ då ingen följdfråga utan ge bara ett förtyfligande avslut.
-    5. Om kandidaten ställer en fråga, svara mycket kortfattat utan att ge för mycket vägledning
-    6. Dela endast med dig av specifik data från CASE DATA-sektionen om kandidaten aktivt efterfrågar 
-        den typen av information, eller om deras resonemang naturligt leder till det.
-         Exempel: Om kandidaten säger “Kan det vara så att försäljningen har gått ner?”, svara då med relevant datapunkt:
-        “Ja, det är pga [relevant fakta från CASE DATA]”
-        (Du får aldrig visa hela CASE DATA-listan. Avslöja inte fler datapunkter än vad kandidaten själv leder in samtalet mot.)
+    Your tasks in this interaction are to:
+    1. Guide the candidate through the case step-by-step and provide relevant information as needed
+    2. Ensure that the candidate's reasoning covers the core aspects of the section
+    3. Assess whether the candidate meets all the criteria to move forward
+    4. If the candidate meets all the criteria, do not ask a follow-up question; instead, give only a clarifying conclusion.
+    5. If the candidate asks a question, respond very briefly without giving too much guidance
+    6. Only share specific data from the CASE DATA section if the candidate actively requests
+        that type of information, or if their reasoning naturally leads to it.
+         Example: If the candidate says “Could it be that sales have gone down?”, then respond with the relevant data point:
+        “Yes, it is because [relevant fact from CASE DATA]”
+        (You must never show the entire CASE DATA list. Do not reveal more data points than what the candidate's reasoning naturally leads to.)
     
     
     ---
     
     📄 CASE STUDY
-    Titel: ${businessCase.title}  
-    Företag: ${businessCase.company}  
-    Bransch: ${businessCase.industry}  
+    Title: ${businessCase.title}  
+    Company: ${businessCase.company}  
+    Industry: ${businessCase.industry}  
     
-    📎 Nuvarande sektionsfråga:  
+    📎 Current section question:  
     ${relevantSections}
     
     ${currentSection.case_data ? `
@@ -258,38 +258,39 @@ export async function POST(request: Request) {
     ` : ''}
     
     ${currentSection.graph_description ? `
-    📊 Graf/bild som är relevant för frågan:
+    📊 Graph/image relevant to the question:
     ${currentSection.graph_description}
     ` : ''}
     
-    🎯 Bedömningskriterier i denna sektion:  
+    🎯 Evaluation criteria for this section:  
     ${currentSection.criteria}
     
-    🧠 Konversationshistorik:  
-    ${conversationHistory || 'Ingen tidigare konversation'}
+    🧠 Conversation history:  
+    ${conversationHistory || 'No previous conversation'}
     
-    🗣️ Kandidatens senaste svar:  
+    🗣️ Candidate's latest answer:  
     ${responseText}
     
     ${hasSketch ? `
-    📝 Kandidatens skissanalys:
+    📝 Candidate's sketch analysis:
     ${sketchAnalysis}
     ` : ''}
     
     ---
     
-    ✅ När du bedömer kandidatens svar:
+    ✅ When evaluating the candidate's answer:
 
-      Om kandidatens svar uppfyller kriterierna, skriv exakt:
-      KRITERIER UPPFYLLDA: Ja (på en egen rad, utan extra text före eller efter) och ge ett förtyfligande avslut utan följdfrågor.
+      If the candidate's answer meets the criteria, write exactly:
+      CRITERIA MET: Yes (on its own line, without any extra text before or after) and give a clarifying conclusion without follow-up questions.
 
 
-      Om kandidatens svar inte uppfyller kriterierna, skriv exakt:
-      KRITERIER UPPFYLLDA: Nej (på en egen rad, utan extra text före eller efter)
+      If the candidate's answer does not meet the criteria, write exactly:
+      CRITERIA MET: No (on its own line, without any extra text before or after)
 
-    🔒 Du får inte använda andra varianter som "Delvis" eller lägga till extra text på den raden.
-      Detta är ett tekniskt format som används för att trigga nästa steg i systemet.
+    🔒 You may not use other variations such as "Partially" or add any extra text on that line.
+      This is a technical format used to trigger the next step in the system.
     `;
+
 
     console.log('=== FINAL PROMPT ===');
     console.log(prompt);
@@ -301,13 +302,13 @@ export async function POST(request: Request) {
     if (useLocalModel) {
       // Använd lokal Ollama-modell
       try {
-        const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+        const ollamaResponse = await fetch('http://192.168.1.209:11434/api/generate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'phi3:latest',
+            model: 'mistral:7b-instruct',
             prompt: prompt,
             stream: false,
             options: {
@@ -342,10 +343,10 @@ export async function POST(request: Request) {
     }
     
     // Check if criteria are met
-    const isComplete = feedback.includes("KRITERIER UPPFYLLDA: Ja");
+    const isComplete = feedback.includes("CRITERIA MET: Yes");
     
     // Remove the criteria line from the feedback
-    const cleanFeedback = feedback.replace(/KRITERIER UPPFYLLDA: (Ja|Nej)/g, '').trim();
+    const cleanFeedback = feedback.replace(/CRITERIA MET: (Yes|No)/g, '').trim();
 
     // Save the response to the database
     const { error: saveError } = await supabaseServer

@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { useState, useEffect, useCallback } from 'react'
 import { PrimaryButton } from '../components/ui/primary_button'
 import { GoogleIcon } from '../components/ui/google_icon'
-import Image from 'next/image'
+
 
 function LoginContent() {
   const searchParams = useSearchParams()
@@ -20,17 +20,17 @@ function LoginContent() {
   const getErrorMessage = useCallback((errorCode?: string) => {
     switch (errorCode) {
       case 'OAuthAccountNotLinked':
-        return 'Detta Google-konto är inte kopplat till något befintligt konto. Skapa först ett konto med din e-postadress.'
+        return 'This Google account is not linked to any existing account. Please create an account with your email address first.'
       case 'AccessDenied':
-        return 'Åtkomst nekad. Kontrollera att du har rätt behörighet.'
+        return 'Access denied. Please check that you have the correct permissions.'
       default:
-        return error ? 'Ett fel uppstod vid inloggning. Försök igen.' : null
+        return error ? 'An error occurred during login. Please try again.' : null
     }
   }, [error])
 
   useEffect(() => {
     if (registered) {
-      setMessage('Konto skapat! Du kan nu logga in med Google.')
+      setMessage('Account created! You can now sign in with Google.')
     }
     
     if (error) {
@@ -49,7 +49,7 @@ function LoginContent() {
       })
     } catch (error) {
       console.error('Login error:', error)
-      setMessage('Ett fel uppstod vid inloggning. Försök igen.')
+      setMessage('An error occurred during login. Please try again.')
       setIsLoading(false)
     }
   }
@@ -58,20 +58,18 @@ function LoginContent() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-full max-w-md p-8 space-y-8">
         <div className="text-center">
-          <div className="flex justify-center mb-2">
-            <Image src="/logo.png" alt="Case" width={100} height={100} />
-          </div>
+          
           <h2 className="text-3xl font-bold text-gray-900">
-            Välkommen tillbaka!
+            Welcome back!
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Logga in för att fortsätta till ditt konto
+            Sign in to continue to your account
           </p>
         </div>
 
         {message && (
           <div className={`p-4 rounded-lg text-sm ${
-            message.includes('Konto skapat') 
+            message.includes('Account created') 
               ? 'bg-green-50 text-green-700 border border-green-200' 
               : 'bg-red-50 text-red-700 border border-red-200'
           }`}>
@@ -86,7 +84,7 @@ function LoginContent() {
             className="w-full flex items-center justify-center px-4 py-3 text-base"
             icon={<GoogleIcon />}
           >
-            {isLoading ? 'Loggar in...' : 'Fortsätt med Google'}
+            {isLoading ? 'Signing in...' : 'Continue with Google'}
           </PrimaryButton>
 
           <div className="relative">
@@ -94,7 +92,7 @@ function LoginContent() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">eller</span>
+              <span className="px-2 bg-white text-gray-500">or</span>
             </div>
           </div>
 
@@ -103,7 +101,7 @@ function LoginContent() {
               href="/register" 
               className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
             >
-              Har du inget konto? Skapa ett här
+              Don&apos;t have an account? Create one here
             </Link>
           </div>
         </div>
@@ -120,7 +118,7 @@ export default function LoginPage() {
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-indigo-600 border-r-transparent align-[-0.125em]" role="status">
             <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
           </div>
-          <p className="mt-2 text-gray-600">Laddar...</p>
+          <p className="mt-2 text-gray-600">Loading...</p>
         </div>
       </div>
     }>

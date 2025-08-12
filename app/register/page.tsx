@@ -30,7 +30,7 @@ export default function RegisterPage() {
 
       if (!res.ok) {
         const data = await res.json()
-        throw new Error(data.message || 'Något gick fel')
+        throw new Error(data.message || 'Something went wrong')
       }
 
       setSuccess(true)
@@ -38,7 +38,7 @@ export default function RegisterPage() {
         router.push('/login?registered=true')
       }, 2000)
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Något gick fel')
+      setError(error instanceof Error ? error.message : 'Something went wrong')
     } finally {
       setLoading(false)
     }
@@ -49,7 +49,7 @@ export default function RegisterPage() {
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Skapa ett konto
+            Create an account
           </h2>
         </div>
         
@@ -62,14 +62,14 @@ export default function RegisterPage() {
           
           {success && (
             <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded">
-              Konto skapat! Du omdirigeras till inloggningssidan...
+              Account created! You are being redirected to the login page...
             </div>
           )}
           
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="name" className="sr-only">
-                Namn
+                Name
               </label>
               <input
                 id="name"
@@ -77,12 +77,12 @@ export default function RegisterPage() {
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Namn"
+                placeholder="Name"
               />
             </div>
             <div>
               <label htmlFor="email" className="sr-only">
-                E-post
+                Email
               </label>
               <input
                 id="email"
@@ -90,12 +90,12 @@ export default function RegisterPage() {
                 type="email"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="E-post"
+                placeholder="Email"
               />
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Lösenord
+                Password
               </label>
               <input
                 id="password"
@@ -103,7 +103,7 @@ export default function RegisterPage() {
                 type="password"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Lösenord"
+                placeholder="Password"
               />
             </div>
           </div>
@@ -114,14 +114,14 @@ export default function RegisterPage() {
               disabled={loading || success}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              {loading ? 'Skapar konto...' : success ? 'Konto skapat!' : 'Skapa konto'}
+              {loading ? 'Creating account...' : success ? 'Account created!' : 'Create account'}
             </button>
           </div>
         </form>
 
         <div className="text-center">
           <Link href="/login" className="text-sm text-blue-600 hover:text-blue-500">
-            Har du redan ett konto? Logga in här
+            Already have an account? Sign in here
           </Link>
         </div>
       </div>

@@ -21,10 +21,10 @@ const Tips = () => {
 
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="flex items-center gap-4 mb-8">
-          <h1 className="text-3xl font-bold">Case interview tips</h1>
+          <h1 className="text-3xl font-bold">Case Interview Tips</h1>
           <Button variant="outline">
             <BookOpen />
-            Läs mer
+            Read more
           </Button>
         </div>
         <p className="text-gray-600 mb-8 whitespace-pre-wrap">{tipTextArray[0].text}</p>

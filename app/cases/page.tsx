@@ -96,7 +96,7 @@ export default function CasesPage() {
       <div className="container mx-auto px-4 py-8 mt-16">
         {status === 'unauthenticated' && (
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
-            <p>Du behöver logga in för att öva på case och få feedback. Klicka på &quot;Logga in&quot; i övre högra hörnet.</p>
+            <p>You need to sign in to practice cases and get feedback. Click &quot;Sign in&quot; in the upper right corner.</p>
           </div>
         )}
         {renderContent()}

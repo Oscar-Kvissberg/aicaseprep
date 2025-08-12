@@ -79,9 +79,12 @@ function CaseInterviewContent() {
   const [isRecording, setIsRecording] = useState(false)
   const [showHint, setShowHint] = useState(false)
   const [hint, setHint] = useState<string | null>(null)
+  const [showFullImage, setShowFullImage] = useState(false)
+  const [fullImageUrl, setFullImageUrl] = useState<string | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const chatContainerRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // Auto-scroll to bottom when conversation updates
   useEffect(() => {
@@ -89,6 +92,14 @@ function CaseInterviewContent() {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [conversationHistory, isAiResponding]);
+
+  // Auto-resize textarea when responseText changes
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 300)}px`;
+    }
+  }, [responseText]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -177,7 +188,7 @@ function CaseInterviewContent() {
 
         if (allProgressError) {
           console.error('Error checking all progress:', allProgressError);
-          toast.error('Kunde inte kontrollera din progress');
+          toast.error('Could not check your progress');
           return;
         }
 
@@ -193,7 +204,7 @@ function CaseInterviewContent() {
 
         if (progressError && progressError.code !== 'PGRST116') { // PGRST116 is "not found" error
           console.error('Error checking existing progress:', progressError);
-          toast.error('Kunde inte kontrollera din progress');
+          toast.error('Could not check your progress');
           return;
         }
 
@@ -212,7 +223,7 @@ function CaseInterviewContent() {
           if (!response.ok) {
             const errorData = await response.json();
             console.error('Error creating initial progress:', errorData);
-            toast.error('Kunde inte skapa användarprogress');
+            toast.error('Could not create user progress');
             return;
           }
         } else {
@@ -226,14 +237,14 @@ function CaseInterviewContent() {
 
           if (balanceError) {
             console.error('Error fetching credit balance:', balanceError);
-            toast.error('Kunde inte kontrollera dina krediter');
+            toast.error('Could not check your credits');
             return;
           }
 
           const availableCredits = balanceData?.current_balance || 0;
 
           if (availableCredits < 1) {
-            toast.error('Du har inga krediter kvar. Köp fler för att fortsätta.');
+            toast.error('You have no credits left. Buy more to continue.');
             router.push('/dash');
             return;
           }
@@ -259,13 +270,13 @@ function CaseInterviewContent() {
               details: deductError.details,
               hint: deductError.hint
             });
-            toast.error(`Kunde inte dra av kredit: ${deductError.message || 'Okänt fel'}`);
+            toast.error(`Could not deduct credit: ${deductError.message || 'Unknown error'}`);
             return;
           }
 
           console.log('Successfully deducted credit:', deductData);
 
-          toast.success('En kredit har dragits av. Lycka till med caset!');
+          toast.success('One credit has been deducted. Good luck with the case!');
         }
 
         // Create or update progress for this specific case
@@ -284,16 +295,16 @@ function CaseInterviewContent() {
 
         if (updateError) {
           console.error('Error updating case progress:', updateError);
-          toast.error('Kunde inte uppdatera din progress');
+          toast.error('Could not update your progress');
           return;
         }
 
         // Show different success message for first case
         if (isFirstCase) {
-          toast.success('Välkommen! Du har fått 2 krediter och en har använts för detta case. Lycka till!');
+          toast.success('Welcome! You have received 2 credits and one has been used for this case. Good luck!');
         }
         
-        // Rensa alla sessionStorage-nycklar för detta case när det startas om
+        // Clear all sessionStorage keys for this case when it's restarted
         const keysToRemove = [];
         for (let i = 0; i < sessionStorage.length; i++) {
           const key = sessionStorage.key(i);
@@ -307,7 +318,7 @@ function CaseInterviewContent() {
         router.push(`/case-interview?caseId=${caseId}&sectionId=${sections[0].id}`);
       } catch (error) {
         console.error('Error in handleStartCase:', error);
-        toast.error('Ett oväntat fel uppstod. Försök igen.');
+        toast.error('An unexpected error occurred. Please try again.');
       }
     }
   };
@@ -339,7 +350,7 @@ function CaseInterviewContent() {
 
         if (updateError) {
           console.error('Error updating progress:', updateError);
-          toast.error('Kunde inte uppdatera din progress');
+          toast.error('Could not update your progress');
           return;
         }
 
@@ -347,7 +358,7 @@ function CaseInterviewContent() {
         router.push(`/case-completed?caseId=${caseId}`);
       } catch (err) {
         console.error('Error completing case:', err);
-        toast.error('Kunde inte slutföra caset');
+        toast.error('Could not complete the case');
       }
     }
   };
@@ -356,12 +367,12 @@ function CaseInterviewContent() {
     e.preventDefault()
     
     if (!session?.user?.email) {
-      toast.error('Du måste vara inloggad för att skicka in ett svar')
+      toast.error('You must be signed in to submit a response')
       return
     }
     
     if (!responseText.trim() && !whiteboardImageUrl) {
-      toast.error('Vänligen skriv in ditt svar eller lägg till en skiss')
+      toast.error('Please write your response or add a sketch')
       return
     }
     
@@ -370,15 +381,15 @@ function CaseInterviewContent() {
     
     // Create message content with optional whiteboard image
     const messageContent = whiteboardImageUrl 
-      ? `${responseText.trim()}\n\n[Skiss]\n![Skiss](${whiteboardImageUrl})`
+      ? `${responseText.trim()}\n\n[Sketch]\n![Sketch](${whiteboardImageUrl})`
       : responseText.trim()
     
     console.log('Message content:', messageContent); // Debug log
     
     // Create or update conversation history with user's message
     const updatedHistory = conversationHistory 
-      ? `${conversationHistory}\n\n---\n\nKandidat: ${messageContent}`
-      : `Kund: ${currentSection?.prompt}${currentSection?.imageUrl ? `\n\n![Case graf/bild](${currentSection.imageUrl})` : ''}\n\n---\n\nKandidat: ${messageContent}`
+      ? `${conversationHistory}\n\n---\n\nCandidate: ${messageContent}`
+      : `Client: ${currentSection?.prompt}${currentSection?.imageUrl ? `\n\n![Case graph/image](${currentSection.imageUrl})` : ''}\n\n---\n\nCandidate: ${messageContent}`
     
     // Update conversation history immediately with user's message
     setConversationHistory(updatedHistory)
@@ -411,12 +422,12 @@ function CaseInterviewContent() {
       setIsComplete(data.isComplete)
       
       // Update conversation history with AI's response
-      setConversationHistory(updatedHistory + `\n\n---\n\nKund: ${data.feedback}`)
+      setConversationHistory(updatedHistory + `\n\n---\n\nClient: ${data.feedback}`)
       
-      toast.success('Svar skickat!')
+      toast.success('Response sent!')
     } catch (err) {
       console.error('Error submitting response:', err)
-      toast.error('Kunde inte skicka svaret. Försök igen.')
+      toast.error('Could not send the response. Please try again.')
       // Revert conversation history on error
       setConversationHistory(conversationHistory)
     } finally {
@@ -452,15 +463,22 @@ function CaseInterviewContent() {
           })
           
           if (!response.ok) {
-            throw new Error('Transkribering misslyckades')
+            throw new Error('Transcription failed')
           }
           
           const { text } = await response.json()
           setResponseText(text)
+          // Trigger resize after setting text
+          setTimeout(() => {
+            if (textareaRef.current) {
+              textareaRef.current.style.height = 'auto';
+              textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 300)}px`;
+            }
+          }, 100)
           
         } catch (error) {
           console.error('Error transcribing audio:', error)
-          toast.error('Kunde inte transkribera ljudinspelningen')
+          toast.error('Could not transcribe the audio recording')
         }
       }
 
@@ -468,7 +486,7 @@ function CaseInterviewContent() {
       setIsRecording(true)
     } catch (error) {
       console.error('Error starting recording:', error)
-      toast.error('Kunde inte starta ljudinspelning')
+      toast.error('Could not start audio recording')
     }
   }
 
@@ -532,7 +550,7 @@ function CaseInterviewContent() {
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           <p>{error}</p>
           <Link href="/cases" className="mt-2 inline-block text-blue-500 underline">
-            Tillbaka till case biblioteket
+            Back to case library
           </Link>
         </div>
       </div>
@@ -545,7 +563,7 @@ function CaseInterviewContent() {
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
           <p>Case not found</p>
           <Link href="/cases" className="mt-2 inline-block text-blue-500 underline">
-            Tillbaka till case biblioteket
+            Back to case library
           </Link>
         </div>
       </div>
@@ -558,7 +576,7 @@ function CaseInterviewContent() {
       <div className="container mx-auto px-4 md:px-8 lg:px-16 xl:px-24 py-8">
         <div className="mb-6">
           <Link href="/cases" className="text-blue-500 hover:underline">
-            &larr; Tillbaka till case biblioteket
+            &larr; Back to case library
           </Link>
         </div>
         
@@ -579,7 +597,7 @@ function CaseInterviewContent() {
             
             {!session ? (
               <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
-                <p>Vänligen <Link href="/login" className="underline">logga in</Link> för att börja case-intervjun.</p>
+                <p>Please <Link href="/login" className="underline">sign in</Link> to start the case interview.</p>
               </div>
             ) : (
               <div className="mt-8">
@@ -590,7 +608,7 @@ function CaseInterviewContent() {
                     </p>
                     
                     <div className="mb-6">
-                      <h3 className="text-lg font-semibold mb-2">Sektioner:</h3>
+                      <h3 className="text-lg font-semibold mb-2">Sections:</h3>
                       <ul className="list-disc pl-5">
                         {sections.map((section) => (
                           <li key={section.id} className="mb-1">
@@ -601,7 +619,7 @@ function CaseInterviewContent() {
                     </div>
 
                     <p className="text-lg">
-                      Är du redo att börja? Klicka på &quot;Starta Case&quot; nedan för att påbörja första sektionen!
+                      Are you ready to start? Click &quot;Start Case&quot; below to begin the first section!
                     </p>
                   </div>
                 </div>
@@ -610,7 +628,7 @@ function CaseInterviewContent() {
                   onClick={handleStartCase}
                   variant="primary_c2a"
                 >
-                  Starta Case
+                  Start Case
                 </Button>
               </div>
             )}
@@ -631,21 +649,72 @@ function CaseInterviewContent() {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
-          Avsluta case
+          Exit case
         </button>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-6">
+        <div className="bg-white shadow-md rounded-lg p-4">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-lg font-semibold text-gray-800">Case Progress</h2>
+            <span className="text-sm text-gray-600">
+              Section {sections.findIndex(s => s.id === currentSection.id) + 1} of {sections.length}
+            </span>
+          </div>
+          <div className="flex gap-1">
+            {sections
+              .sort((a, b) => a.order_index - b.order_index)
+              .map((section, index) => {
+              const isCurrentSection = section.id === currentSection.id;
+              const isLast = index === sections.length - 1;
+              
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => {
+                    router.push(`/case-interview?caseId=${caseId}&sectionId=${section.id}`);
+                  }}
+                  className={`group relative transition-all duration-200 ${
+                    isCurrentSection
+                      ? 'bg-gradient-to-r from-p-custom to-s-custom text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  } cursor-pointer`}
+                                      style={{
+                      clipPath: index === 0
+                        ? 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)' // First section - flat left edge
+                        : isLast 
+                        ? 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)' // Last section - flat right edge
+                        : 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%, 5% 50%)' // Middle sections - pointed on both sides
+                    }}
+                  title={section.title}
+                >
+                  <div className="px-4 py-2 text-sm font-medium whitespace-nowrap">
+                    {section.title}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex justify-between items-center mt-2">
+            <span className="text-xs text-gray-500">
+              Section {sections.findIndex(s => s.id === currentSection.id) + 1} of {sections.length}
+            </span>
+            <span className="text-xs text-gray-500">
+              Click any section to navigate
+            </span>
+          </div>
+        </div>
       </div>
       
       <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
         <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6">
             <h1 className="text-2xl font-bold">{businessCase.title}</h1>
-            <div className="text-sm text-gray-500">
-              Sektion {sections.findIndex(s => s.id === currentSection.id) + 1} av {sections.length}
-            </div>
           </div>
           
           <div className="lg:grid lg:grid-cols-3 lg:gap-6">
-            {/* Vänster kolumn - Beskrivning och hint */}
+            {/* Left column - Description and hint */}
             <div className="lg:col-span-1 mb-6 lg:mb-0">
               <div className="bg-gray-50 p-4 rounded-lg sticky top-4">
                 <div className="prose max-w-none">
@@ -663,7 +732,7 @@ function CaseInterviewContent() {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                         </svg>
-                        <span>Visa hint</span>
+                        <span>Show hint</span>
                       </GradientBorderButton>
                       {showHint && hint && (
                         <div className="mt-4 p-4 bg-gradient-to-r from-p-custom/20 to-s-custom/20 border border-purple-200 rounded-xl">
@@ -686,11 +755,11 @@ function CaseInterviewContent() {
               </div>
             </div>
 
-            {/* Höger kolumn - Chat */}
+            {/* Right column - Chat */}
             <div className="lg:col-span-2">
               {!session ? (
                 <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-xl mb-6">
-                  <p>Vänligen <Link href="/login" className="underline">logga in</Link> för att skicka in ditt svar och få feedback.</p>
+                  <p>Please <Link href="/login" className="underline">sign in</Link> to submit your response and get feedback.</p>
                 </div>
               ) : (
                 <div>
@@ -700,28 +769,40 @@ function CaseInterviewContent() {
                     <div className="flex-shrink-0 mr-3">
                       <Image
                         src="/images/customer-avatar.png"
-                        alt="Kund"
+                        alt="Client"
                         width={70}
                         height={70}
                         className="rounded-full"
                       />
                     </div>
                     <div className="max-w-[80%] p-3 rounded-xl bg-gray-100 text-gray-800 rounded-tl-none">
-                      <div className="text-xs font-semibold mb-1">Kund</div>
+                      <div className="text-xs font-semibold mb-1">Client</div>
                       <div className="whitespace-pre-line">
                         {currentSection.prompt}
                         {currentSection.imageUrl && (
-                          <div className="mt-4">
+                          <div className="mt-4 relative inline-block">
                             <Image
                               loader={supabaseImageLoader}
                               src={currentSection.imageUrl}
-                              alt="Case graf/bild"
+                              alt="Case graph/image"
                               width={400}
                               height={300}
                               className="rounded-xl border border-gray-200 max-w-full h-auto"
                               style={{ maxHeight: '200px', objectFit: 'contain' }}
                               unoptimized
                             />
+                            <button
+                              onClick={() => {
+                                setFullImageUrl(currentSection.imageUrl || null);
+                                setShowFullImage(true);
+                              }}
+                              className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-md shadow-sm transition-colors z-10"
+                              title="Förstora bild"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.607 10.607zM10.5 7.5v6m3-3h-6" />
+                              </svg>
+                            </button>
                           </div>
                         )}
                       </div>
@@ -732,8 +813,8 @@ function CaseInterviewContent() {
                     {conversationHistory.split('\n\n---\n\n').map((message, index) => {
                       if (message.trim() === '') return null;
                       
-                      const isUser = message.startsWith('Kandidat:');
-                      const content = message.replace(/^(Kandidat:|Kund:)\s*/, '');
+                      const isUser = message.startsWith('Candidate:');
+                      const content = message.replace(/^(Candidate:|Client:)\s*/, '');
                       
                       return (
                         <div 
@@ -744,7 +825,7 @@ function CaseInterviewContent() {
                             <div className={`flex-shrink-0 ${isUser ? 'ml-3' : 'mr-3'}`}>
                               <Image
                                 src="/images/customer-avatar.png"
-                                alt="Kund"
+                                alt="Client"
                                 width={40}
                                 height={40}
                                 className="rounded-full"
@@ -754,7 +835,7 @@ function CaseInterviewContent() {
                             <div className={`flex-shrink-0 ${isUser ? 'ml-3' : 'mr-3'}`}>
                               <Image
                                 src={session?.user?.image || '/images/default-avatar.png'}
-                                alt="Du"
+                                alt="You"
                                 width={40}
                                 height={40}
                                 className="rounded-full"
@@ -769,7 +850,7 @@ function CaseInterviewContent() {
                             }`}
                           >
                             <div className="text-xs font-semibold mb-1">
-                              {isUser ? 'Du' : 'Kund'}
+                              {isUser ? 'You' : 'Client'}
                             </div>
                             <div className="whitespace-pre-line">
                               {content.split('\n').map((line, i) => {
@@ -787,7 +868,7 @@ function CaseInterviewContent() {
                                   const [, altText, imageUrl] = imageMatch;
                                   console.log('Found image:', altText, imageUrl);
                                   return (
-                                    <div key={i} className="mt-2">
+                                    <div key={i} className="mt-2 relative inline-block">
                                       <Image
                                         loader={supabaseImageLoader}
                                         src={imageUrl}
@@ -798,6 +879,19 @@ function CaseInterviewContent() {
                                         style={{ maxHeight: '200px', objectFit: 'contain' }}
                                         unoptimized
                                       />
+                                      <button
+                                        onClick={() => {
+                                          setFullImageUrl(imageUrl);
+                                          setShowFullImage(true);
+                                        }}
+                                        className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-md shadow-sm transition-colors z-10"
+                                        title="Förstora bild"
+                                        style={{ position: 'absolute', top: '8px', right: '8px' }}
+                                      >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5">
+                                          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0l9 9m0 0v4.5m0-4.5h-4.5m4.5 0l-9-9" />
+                                        </svg>
+                                      </button>
                                     </div>
                                   );
                                 }
@@ -816,14 +910,14 @@ function CaseInterviewContent() {
                         <div className="flex-shrink-0 mr-3">
                           <Image
                             src="/images/customer-avatar.png"
-                            alt="Kund"
+                            alt="Client"
                             width={40}
                             height={40}
                             className="rounded-full"
                           />
                         </div>
                         <div className="max-w-[80%] p-3 rounded-xl bg-gray-100 text-gray-800 rounded-tl-none">
-                          <div className="text-xs font-semibold mb-1">Kund</div>
+                          <div className="text-xs font-semibold mb-1">Client</div>
                           <div className="flex items-center space-x-2">
                             <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                             <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
@@ -841,7 +935,7 @@ function CaseInterviewContent() {
                   <div className="mb-4">
                     <div className="relative">
                       <textarea
-                        id="response"
+                        ref={textareaRef}
                         rows={1}
                         className="w-full px-4 py-3 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-hidden"
                         value={responseText}
@@ -849,9 +943,9 @@ function CaseInterviewContent() {
                           setResponseText(e.target.value);
                           // Auto-resize textarea
                           e.target.style.height = 'auto';
-                          e.target.style.height = `${Math.min(e.target.scrollHeight, 200)}px`;
+                          e.target.style.height = `${Math.min(e.target.scrollHeight, 300)}px`;
                         }}
-                        placeholder="Skriv ditt svar här..."
+                        placeholder="Write your response here..."
                         disabled={submitting}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
@@ -861,13 +955,27 @@ function CaseInterviewContent() {
                             }
                           }
                         }}
+                        style={{ minHeight: '44px', maxHeight: '300px', overflowY: 'auto' }}
+                        onWheel={(e) => {
+                          const textarea = e.currentTarget;
+                          const { scrollTop, scrollHeight, clientHeight } = textarea;
+                          
+                          // If we're at the top and scrolling up, or at the bottom and scrolling down,
+                          // prevent the default scroll behavior and stop propagation
+                          if ((scrollTop === 0 && e.deltaY < 0) || 
+                              (scrollTop + clientHeight >= scrollHeight && e.deltaY > 0)) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return false;
+                          }
+                        }}
                       ></textarea>
                       <div className="absolute right-2 bottom-2 flex gap-2">
                         <button
                           type="button"
                           onClick={() => setShowWhiteboard(true)}
                           className="p-2 text-gray-500 hover:text-gray-700"
-                          title="Lägg till skiss"
+                          title="Add sketch"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
@@ -877,7 +985,7 @@ function CaseInterviewContent() {
                           type="button"
                           onClick={isRecording ? stopRecording : startRecording}
                           className={`p-2 ${isRecording ? 'text-red-500 hover:text-red-700' : 'text-gray-500 hover:text-gray-700'}`}
-                          title={isRecording ? 'Stoppa inspelning' : 'Spela in röstmeddelande'}
+                          title={isRecording ? 'Stop recording' : 'Record voice message'}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
@@ -902,7 +1010,7 @@ function CaseInterviewContent() {
                       </div>
                     </div>
                     <div className="text-xs text-gray-500 mt-1 text-right">
-                      Tryck Enter för att skicka, Shift+Enter för ny rad
+                      Press Enter to send, Shift+Enter for new line
                     </div>
                     {whiteboardImageUrl && (
                       <div className="mt-2 p-2 bg-gray-100 rounded-xl flex items-center justify-between">
@@ -910,7 +1018,7 @@ function CaseInterviewContent() {
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2 text-gray-500">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                           </svg>
-                          <span className="text-sm text-gray-700">Skiss bifogad</span>
+                          <span className="text-sm text-gray-700">Sketch attached</span>
                         </div>
                         <button
                           type="button"
@@ -929,8 +1037,8 @@ function CaseInterviewContent() {
                                   <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
                     <p>
                       {sections.findIndex(s => s.id === currentSection.id) < sections.length - 1 
-                        ? 'Grattis! Du har slutfört denna sektion. Klicka på "Nästa sektion" för att fortsätta.'
-                        : 'Grattis! Du har slutfört detta case. Klicka på "Slutför case" för att avsluta.'
+                        ? 'Congratulations! You have completed this section. Click "Next Section" to continue.'
+                        : 'Congratulations! You have completed this case. Click "Complete Case" to finish.'
                       }
                     </p>
                     <div className="mt-3">
@@ -940,8 +1048,8 @@ function CaseInterviewContent() {
                       variant="primary_c2a"
                     >
                       {sections.findIndex(s => s.id === currentSection.id) < sections.length - 1 
-                        ? 'Nästa sektion' 
-                        : 'Slutför case'}
+                        ? 'Next Section' 
+                        : 'Complete Case'}
                     </Button>
                     </div>
                   </div>
@@ -961,6 +1069,44 @@ function CaseInterviewContent() {
           }}
           onClose={() => setShowWhiteboard(false)}
         />
+      )}
+
+      {/* Full Image Modal */}
+      {showFullImage && fullImageUrl && (
+        <div 
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => {
+            setShowFullImage(false);
+            setFullImageUrl(null);
+          }}
+        >
+          <div 
+            className="relative max-w-2xl max-h-[80vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => {
+                setShowFullImage(false);
+                setFullImageUrl(null);
+              }}
+              className="absolute -top-10 right-0 p-2 bg-white/20 hover:bg-white/30 rounded-lg text-white transition-colors"
+              title="Stäng"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <Image
+              loader={supabaseImageLoader}
+              src={fullImageUrl}
+              alt="Förstorad bild"
+              width={600}
+              height={400}
+              className="rounded-xl max-w-full max-h-full object-contain"
+              unoptimized
+            />
+          </div>
+        </div>
       )}
     </div>
   )

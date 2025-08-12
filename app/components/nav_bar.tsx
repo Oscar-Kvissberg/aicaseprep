@@ -5,7 +5,7 @@ import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { UserCircleIcon, BriefcaseIcon, ArrowLeftEndOnRectangleIcon, BookOpenIcon, HomeIcon, CreditCardIcon } from '@heroicons/react/24/outline'
+import { UserCircleIcon, BriefcaseIcon, ArrowLeftEndOnRectangleIcon, BookOpenIcon, HomeIcon, CreditCardIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 import { Button } from './ui/button'
 import { BuyCredits } from './buy_credits'
 import {
@@ -88,7 +88,7 @@ export function NavBar() {
                   <Link href="/dash">
                     <span className="flex items-center">
                       <HomeIcon className="w-5 h-5 mr-2" />
-                      Hem
+                      Home
                     </span>
                   </Link>
                 </Button>
@@ -105,7 +105,7 @@ export function NavBar() {
                   <Link href="/cases">
                     <span className="flex items-center">
                       <BriefcaseIcon className="w-5 h-5 mr-2" />
-                      Casebank
+                      Case Library
                     </span>
                   </Link>
                 </Button>
@@ -122,7 +122,7 @@ export function NavBar() {
                   <Link href="/tips">
                     <span className="flex items-center">
                       <BookOpenIcon className="w-5 h-5 mr-2" />
-                      Tips & Guider
+                      Tips & Guides
                     </span>
                   </Link>
                 </Button>
@@ -139,7 +139,7 @@ export function NavBar() {
                   <Link href="/profile">
                     <span className="flex items-center">
                       <UserCircleIcon className="w-5 h-5 mr-2" />
-                      Profil
+                      Profile
                     </span>
                   </Link>
                 </Button>
@@ -160,7 +160,7 @@ export function NavBar() {
                   <NavigationMenuContent className="rounded-xl">
                     <div className="p-4 w-[300px] bg-background shadow-xs rounded-xl">
                       <div className="mb-4">
-                        <h3 className="text-lg font-semibold mb-2">Dina Credits</h3>
+                        <h3 className="text-lg font-semibold mb-2">Your Credits</h3>
                         <p className="text-3xl font-bold text-p-custom">{creditBalance}</p>
                         <p className="text-sm text-gray-500 mt-1">1 Credit = 1 Case</p>
                       </div>
@@ -169,7 +169,7 @@ export function NavBar() {
                         className="w-full"
                         onClick={() => setShowBuyCredits(true)}
                       >
-                        Köp fler credits
+                        Buy more credits
                       </Button>
                     </div>
                   </NavigationMenuContent>
@@ -204,11 +204,19 @@ export function NavBar() {
                 className="text-sm"
               >
                 <ArrowLeftEndOnRectangleIcon className="w-4 h-4 mr-2" />
-                Logga ut
+                Sign out
               </Button>
             ) : (
               <Link href="/login">
-                <Button variant="default" className="text-sm">Logga in</Button>
+                <Button 
+                variant="primary_c2a" 
+                className="text-sm"
+                >
+                  <span className="flex items-center">
+                    <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
+                    Sign in
+                  </span>
+                </Button>
               </Link>
             )}
           </div>

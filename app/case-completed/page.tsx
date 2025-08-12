@@ -78,7 +78,7 @@ function CaseCompletedContent() {
           <p className="mb-4">Case not found</p>
           <Button asChild variant="primary_c2a">
             <Link href="/cases">
-              Tillbaka till case biblioteket
+              Back to case library
             </Link>
           </Button>
         </div>
@@ -105,10 +105,10 @@ function CaseCompletedContent() {
 
         {/* Congratulations Text */}
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Grattis! 🎉
+          Congratulations! 🎉
         </h1>
         <p className="text-xl text-gray-600 mb-8">
-          Du har slutfört caset
+          You have completed the case
         </p>
 
         {/* Case Tags */}
@@ -132,14 +132,14 @@ function CaseCompletedContent() {
             className="w-1/3 h-10"
           >
             <ArrowRightIcon className="w-5 h-5 mr-2" />
-            Prova fler cases
+            Try more cases
           </Button>
           
           <GradientBorderButton
             onClick={() => router.push('/dash')}
             className="w-1/3 h-10 text-center items-center justify-center flex"
           >
-            Tillbaka till dashboard
+            Back to dashboard
           </GradientBorderButton>
         </div>
       </div>

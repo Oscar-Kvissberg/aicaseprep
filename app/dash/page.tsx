@@ -98,7 +98,7 @@ export default function DashboardPage() {
         
         if (error) {
           console.error('Error fetching business cases:', error);
-          toast.error('Kunde inte hämta case');
+          toast.error('Could not fetch cases');
           return;
         }
         
@@ -107,7 +107,7 @@ export default function DashboardPage() {
         }
       } catch (err) {
         console.error('Exception when fetching business cases:', err);
-        toast.error('Kunde inte hämta case');
+        toast.error('Could not fetch cases');
       } finally {
         if (!isMounted) return;
         setLoading(false);
@@ -129,36 +129,36 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4 py-8 mt-16">
           <div className="mb-12">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-600">Populära Business cases</h2>
+              <h2 className="text-2xl font-bold text-gray-600">Popular Business Cases</h2>
               <Button variant="outline" disabled>
-                Utforska alla case
+                Explore all cases
               </Button>
             </div>
             <SkeletonCaseCards />
           </div>
           <div className="mb-12">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-600">Nya Case</h2>
+              <h2 className="text-2xl font-bold text-gray-600">New Cases</h2>
               <Button variant="outline" disabled>
-                Utforska alla case
+                Explore all cases
               </Button>
             </div>
             <SkeletonCaseCards />
           </div>
           <div className="mb-12">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-600">Case med garanterad kvalitet</h2>
+              <h2 className="text-2xl font-bold text-gray-600">Cases with Guaranteed Quality</h2>
               <Button variant="outline" disabled>
-                Utforska alla case
+                Explore all cases
               </Button>
             </div>
             <SkeletonCaseCards />
           </div>
           <div className="mb-12">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevanta Case för dig</h2>
+              <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevant Cases for You</h2>
               <Button variant="outline" disabled>
-                Utforska alla case
+                Explore all cases
               </Button>
             </div>
             <SkeletonCaseCards />
@@ -237,10 +237,10 @@ export default function DashboardPage() {
       <div className="container mx-auto px-4 py-8 mt-16">
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-600">Populära Business cases</h2>
+            <h2 className="text-2xl font-bold text-gray-600">Popular Business Cases</h2>
             <Link href="/cases">
               <GradientBorderButton>
-                Utforska alla case
+                Explore all cases
               </GradientBorderButton>
             </Link>
           </div>
@@ -248,10 +248,10 @@ export default function DashboardPage() {
         </div>
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-600">Nya Case</h2>
+            <h2 className="text-2xl font-bold text-gray-600">New Cases</h2>
             <Link href="/cases">
               <GradientBorderButton>
-                Utforska alla case
+                Explore all cases
               </GradientBorderButton>
             </Link>
           </div>
@@ -259,10 +259,10 @@ export default function DashboardPage() {
         </div>
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-600">Case med garanterad kvalitet</h2>
+            <h2 className="text-2xl font-bold text-gray-600">Cases with Guaranteed Quality</h2>
             <Link href="/cases">
               <GradientBorderButton>
-                Utforska alla case
+                Explore all cases
               </GradientBorderButton>
             </Link>
           </div>
@@ -270,10 +270,10 @@ export default function DashboardPage() {
         </div>
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevanta Case för dig</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-600">Relevant Cases for You</h2>
             <Link href="/cases">
               <GradientBorderButton>
-                Utforska alla case
+                Explore all cases
               </GradientBorderButton>
             </Link>
           </div>
