@@ -35,13 +35,13 @@ export default function DashboardPage() {
   const [cases, setCases] = useState<BusinessCase[]>([])
   
   // Add featured case IDs - replace these with your desired case IDs
-  const featuredCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
+  const featuredCaseIds = ['05525c5d-48a2-4e7a-ba58-477469e736a9', '3385b03d-14c8-45e0-98c7-9c0a812dd555', '5df30305-966a-4f5c-80a6-e7ecb3ecf14d', '8781096e-d0da-45b0-b74a-0c3df46a76e5']; // Replace with your actual case IDs
   
   // Add featured case IDs - replace these with your desired case IDs
-  const newCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
+  const newCaseIds = ['05525c5d-48a2-4e7a-ba58-477469e736a9', '3385b03d-14c8-45e0-98c7-9c0a812dd555', '5df30305-966a-4f5c-80a6-e7ecb3ecf14d', '8781096e-d0da-45b0-b74a-0c3df46a76e5']; // Replace with your actual case IDs
   
   // Add featured case IDs - replace these with your desired case IDs
-  const easyuredCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
+  const easyuredCaseIds = ['c89df0bd-0d0f-4da9-8e87-965b5875e2e0', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
   
   // Add featured case IDs - replace these with your desired case IDs
   const relevantCaseIds = ['c98de91e-93e6-4582-81c2-c558f1ea430e', 'c89df0bd-0d0f-4da9-8e87-965b5875e2e0', '249d9484-d24e-4f6b-a3a7-79d5b9fb6d8e', '150096b7-ef60-4b64-a92a-7577bab422e8']; // Replace with your actual case IDs
