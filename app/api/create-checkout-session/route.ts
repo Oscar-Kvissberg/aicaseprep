@@ -5,9 +5,9 @@ import { authOptions } from '@/app/api/auth/config';
 
 // These IDs will come from Stripe after we create the products
 const CREDITS_PRICE_MAP = {
-  '3': process.env.NEXT_PUBLIC_STRIPE_CREDIT_3_PRICE_ID || 'price_1RpzcDRiJA2ZIwb0BDNY2YSS',
-  '5': process.env.NEXT_PUBLIC_STRIPE_CREDIT_5_PRICE_ID || 'price_1RpzdVRiJA2ZIwb0aBSIZRKC',
-  '10': process.env.NEXT_PUBLIC_STRIPE_CREDIT_10_PRICE_ID || 'price_1RpzetRiJA2ZIwb0P9PwEkPx'
+  '1': process.env.NEXT_PUBLIC_STRIPE_CREDIT_1_PRICE_ID || 'price_1RpzcDRiJA2ZIwb0BDNY2YSS',
+  '3': process.env.NEXT_PUBLIC_STRIPE_CREDIT_3_PRICE_ID || 'price_1RpzdVRiJA2ZIwb0aBSIZRKC',
+  '5': process.env.NEXT_PUBLIC_STRIPE_CREDIT_5_PRICE_ID || 'price_1RpzetRiJA2ZIwb0P9PwEkPx'
 };
 
 export async function POST(request: Request) {

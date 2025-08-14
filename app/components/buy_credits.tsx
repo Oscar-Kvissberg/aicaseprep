@@ -8,9 +8,9 @@ import toast from 'react-hot-toast';
 
 // These IDs should match the ones in the server-side CREDITS_PRICE_MAP
 const CREDITS_PRICE_MAP = {
-  '3': process.env.NEXT_PUBLIC_STRIPE_CREDIT_3_PRICE_ID || 'price_1RpzcDRiJA2ZIwb0BDNY2YSS',
-  '5': process.env.NEXT_PUBLIC_STRIPE_CREDIT_5_PRICE_ID || 'price_1RpzdVRiJA2ZIwb0aBSIZRKC',
-  '10': process.env.NEXT_PUBLIC_STRIPE_CREDIT_10_PRICE_ID || 'price_1RpzetRiJA2ZIwb0P9PwEkPx'
+  '1': process.env.NEXT_PUBLIC_STRIPE_CREDIT_1_PRICE_ID || 'price_1RpzcDRiJA2ZIwb0BDNY2YSS',
+  '3': process.env.NEXT_PUBLIC_STRIPE_CREDIT_3_PRICE_ID || 'price_1RpzdVRiJA2ZIwb0aBSIZRKC',
+  '5': process.env.NEXT_PUBLIC_STRIPE_CREDIT_5_PRICE_ID || 'price_1RpzetRiJA2ZIwb0P9PwEkPx'
 };
 
 interface CreditOption {
