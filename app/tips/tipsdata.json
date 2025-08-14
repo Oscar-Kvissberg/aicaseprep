@@ -1,14 +1,14 @@
 [
     {
-    "trigger": "Case Interview Bok",
-    "content": "Victor Cheng länk till boken"
+    "trigger": "Case Interview Book",
+    "content": "Victor Cheng's book link - Essential reading for case interview preparation"
     },
   {
-    "trigger": "Lär dig att räkna snabbt i huvudet",
-    "content": "Övningssida Victor Cheng https://caseinterview.com/math/mathtest.php"
+    "trigger": "Learn to calculate quickly in your head",
+    "content": "Practice page Victor Cheng https://caseinterview.com/math/mathtest.php"
   },
   {
-    "trigger": "Frameworks att lära sig",
-    "content": "Länk till övningssida Victor Cheng med frameworks"
+    "trigger": "Frameworks to learn",
+    "content": "Link to Victor Cheng's practice page with frameworks"
   }
 ]

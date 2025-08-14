@@ -35,7 +35,12 @@ export default function DashboardPage() {
   const [cases, setCases] = useState<BusinessCase[]>([])
   
   // Add featured case IDs - replace these with your desired case IDs
-  const featuredCaseIds = ['05525c5d-48a2-4e7a-ba58-477469e736a9', '3385b03d-14c8-45e0-98c7-9c0a812dd555', '5df30305-966a-4f5c-80a6-e7ecb3ecf14d', '8781096e-d0da-45b0-b74a-0c3df46a76e5']; // Replace with your actual case IDs
+  const featuredCaseIds = [
+    '05525c5d-48a2-4e7a-ba58-477469e736a9',
+    '3385b03d-14c8-45e0-98c7-9c0a812dd555',
+    '5df30305-966a-4f5c-80a6-e7ecb3ecf14d',
+    '8781096e-d0da-45b0-b74a-0c3df46a76e5',
+  ]; // Replace with your actual case IDs
   
   // Add featured case IDs - replace these with your desired case IDs
   const newCaseIds = ['05525c5d-48a2-4e7a-ba58-477469e736a9', '3385b03d-14c8-45e0-98c7-9c0a812dd555', '5df30305-966a-4f5c-80a6-e7ecb3ecf14d', '8781096e-d0da-45b0-b74a-0c3df46a76e5']; // Replace with your actual case IDs
@@ -235,6 +240,27 @@ export default function DashboardPage() {
     <div className="flex flex-col min-h-screen">
       <NavBar />
       <div className="container mx-auto px-4 py-8 mt-16">
+        {/* Hero Section */}
+        <div className="mb-12">
+          <div className="relative overflow-hidden rounded-xl border border-gray-200">
+            <div className="absolute inset-0 bg-[url('/images/bgbg.jpg')] bg-cover bg-center"></div>
+            <div className="absolute inset-0 bg-black/20"></div>
+            <div className="relative p-8">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <h1 className="text-3xl font-bold text-white mb-2">
+                    Learn the essentials of consulting
+                  </h1>
+                  <p className="text-lg text-blue-100 max-w-2xl">
+                    Practice with imaginary business cases and build the nessesary skills to not suck at case interviews.
+                  </p>
+                </div>
+               
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-600">Popular Business Cases</h2>

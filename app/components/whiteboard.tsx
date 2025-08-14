@@ -200,7 +200,7 @@ export function Whiteboard({ onSave, onClose }: WhiteboardProps) {
     if (mode === 'grid') {
       drawGrid(ctx)
     }
-  }, [mode])
+  }, [mode, drawGrid])
 
   useEffect(() => {
     redrawCanvas()

@@ -73,7 +73,7 @@ export function NavBar() {
   return (
     <>
       <div className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 z-40">
-        <div className="h-full flex items-center justify-between px-4 ml-16">
+        <div className="container mx-auto h-full flex items-center justify-between px-4">
           {/* Left side - Navigation */}
           <NavigationMenu delayDuration={0} skipDelayDuration={0}>
             <NavigationMenuList>
