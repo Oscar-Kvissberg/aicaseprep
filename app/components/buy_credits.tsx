@@ -21,18 +21,18 @@ interface CreditOption {
 
 const CREDIT_OPTIONS: CreditOption[] = [
   {
-    amount: 3,
-    price: 15,
+    amount: 1,
+    price: 2,
     description: 'Starter Pack - Perfect for trying out the platform'
   },
   {
-    amount: 5,
-    price: 24,
+    amount: 3,
+    price: 4,
     description: 'Popular - Great value for regular practice'
   },
   {
-    amount: 10,
-    price: 46,
+    amount: 5,
+    price: 5,
     description: 'Pro Pack - Best value for serious preparation'
   }
 ];
