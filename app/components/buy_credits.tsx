@@ -22,17 +22,17 @@ interface CreditOption {
 const CREDIT_OPTIONS: CreditOption[] = [
   {
     amount: 1,
-    price: 2,
+    price: 1.99,
     description: 'One AI case interview. A simple way to try the experience and see how it works.'
   },
   {
     amount: 3,
-    price: 4,
+    price: 3.99,
     description: 'Three AI case interviews. Good for steady practice and comparing your approach across sessions.'
   },
   {
     amount: 5,
-    price: 5,
+    price: 4.99,
     description: 'Five AI case interviews. Ideal when you want more repetitions in a single purchase.'
   }
 ];
