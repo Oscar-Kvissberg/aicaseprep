@@ -23,17 +23,17 @@ const CREDIT_OPTIONS: CreditOption[] = [
   {
     amount: 1,
     price: 2,
-    description: 'Starter Pack - Perfect for trying out the platform'
+    description: 'One AI case interview. A simple way to try the experience and see how it works.'
   },
   {
     amount: 3,
     price: 4,
-    description: 'Popular - Great value for regular practice'
+    description: 'Three AI case interviews. Good for steady practice and comparing your approach across sessions.'
   },
   {
     amount: 5,
     price: 5,
-    description: 'Pro Pack - Best value for serious preparation'
+    description: 'Five AI case interviews. Ideal when you want more repetitions in a single purchase.'
   }
 ];
 
@@ -116,9 +116,9 @@ export function BuyCredits({ onClose }: BuyCreditsProps) {
           key={option.amount}
           className="rounded-xl shadow-md p-6 flex flex-col gradient-border-normal bg-white"
         >
-          <h3 className="text-2xl font-bold mb-2">{option.amount} Credits</h3>
+          <h3 className="text-2xl font-bold mb-2">{option.amount}Case Credits</h3>
           <p className="text-gray-600 mb-4 flex-grow">{option.description}</p>
-          <div className="text-3xl font-bold mb-4">{option.price} kr</div>
+          <div className="text-3xl font-bold mb-4">${option.price}</div>
           <Button
             variant="primary_c2a"
             onClick={() => handlePurchase(option)}
