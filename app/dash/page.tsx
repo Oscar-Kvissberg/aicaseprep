@@ -245,7 +245,7 @@ export default function DashboardPage() {
           <div className="relative overflow-hidden rounded-xl border border-gray-200">
             <div className="absolute inset-0 bg-[url('/images/bgbg.jpg')] bg-cover bg-center"></div>
             <div className="absolute inset-0 bg-black/20"></div>
-            <div className="relative p-8">
+            <div className="relative p-6">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <h1 className="text-3xl font-bold text-white mb-2">
@@ -255,7 +255,13 @@ export default function DashboardPage() {
                     Practice with imaginary business cases and build the nessesary skills to not suck at case interviews.
                   </p>
                 </div>
-               
+                <div className="flex-shrink-0 ml-8">
+                  <img 
+                    src="/images/white_logo.png" 
+                    alt="Logo" 
+                    className="h-40 w-auto"
+                  />
+                </div>
               </div>
             </div>
           </div>
