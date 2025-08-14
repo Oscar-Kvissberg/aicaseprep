@@ -116,7 +116,7 @@ export function BuyCredits({ onClose }: BuyCreditsProps) {
           key={option.amount}
           className="rounded-xl shadow-md p-6 flex flex-col gradient-border-normal bg-white"
         >
-          <h3 className="text-2xl font-bold mb-2">{option.amount}Case Credits</h3>
+          <h3 className="text-2xl font-bold mb-2">{option.amount} Case Credits</h3>
           <p className="text-gray-600 mb-4 flex-grow">{option.description}</p>
           <div className="text-3xl font-bold mb-4">${option.price}</div>
           <Button

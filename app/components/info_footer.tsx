@@ -1,39 +1,51 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function InfoFooter() {
   return (
     <footer className="bg-white border-t mt-20">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* om oss*/}
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          {/* Logo Section */}
+          <div className="lg:col-span-1">
+            <Image
+              src="/images/catalina.png"
+              alt="Catalina Software Solutions"
+              width={100}
+              height={150}
+              className="h-24 w-24"
+            />
+          </div>
+
+          {/* About us */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">Om oss</h3>
+            <h3 className="text-sm font-semibold mb-4">About us</h3>
             <ul className="space-y-3">
               <li>
                 <Link href="https://www.catalinasoftwaresolutions.se/" className="text-sm text-gray-600 hover:text-gray-900" target="_blank" rel="noopener noreferrer">
-                  Till Catalina Software Solutions hemsida
+                  Visit Catalina Software Solutions website
                 </Link>
               </li>
               <li>
                 <Link href="https://www.catalinasoftwaresolutions.se/AboutUs" className="text-sm text-gray-600 hover:text-gray-900" target="_blank" rel="noopener noreferrer">
-                  Kontakta oss
+                  Contact us
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Produktinformation */}
+          {/* Product Information */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">Produktinformation</h3>
+            <h3 className="text-sm font-semibold mb-4">Product Information</h3>
             <ul className="space-y-3">
               <li>
                 <Link href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                  Produktvård
+                  Product Care (not in BETA version)
                 </Link>
               </li>
               <li>
                 <Link href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                  FAQ
+                  FAQ (not in BETA version)
                 </Link>
               </li>
             </ul>
@@ -58,9 +70,9 @@ export function InfoFooter() {
             {/* Settings */}
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Sverige (SEK)</span>
+                <span className="text-sm text-gray-600">United States (USD)</span>
                 <span className="text-gray-400">|</span>
-                <span className="text-sm text-gray-600">Svenska</span>
+                <span className="text-sm text-gray-600">English</span>
               </div>
             </div>
           </div>
